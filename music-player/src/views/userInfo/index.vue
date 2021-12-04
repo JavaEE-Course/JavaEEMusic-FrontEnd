@@ -5,7 +5,7 @@
 
 <script>
 export default {
-  name: 'Register'
+  name: 'index'
 }
 </script>
 

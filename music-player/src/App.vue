@@ -1,15 +1,14 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
     <router-view/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import Home from './views/home/index'
 export default {
   name: 'App',
-  components: {HelloWorld}
+  components: {Home}
 }
 </script>
 
