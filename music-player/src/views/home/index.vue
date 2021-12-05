@@ -1,12 +1,15 @@
 <template>
-  <div>
-    你好
-  </div>
+  <top-side-bar />
 </template>
 
 <script>
+import TopSideBar from '../../components/TopSidebar'
 export default {
-  name: 'Home'
+  name: 'Home',
+  components: {TopSideBar},
+  data () {
+  },
+  methods: {}
 }
 </script>
 
