@@ -7,13 +7,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: () => import('@/views/home/index')
-    },
-    {
-      path: '/login',
       name: 'Login',
       component: () => import('@/views/login/login')
+    },
+    {
+      path: '/home',
+      name: 'Home',
+      component: () => import('@/views/home/index')
     },
     {
       path: '/register',
