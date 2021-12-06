@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { loginAPI } from '@/api/login'
+// import { loginAPI } from '@/api/login'
 export default{
   data () {
     return {
@@ -80,13 +80,14 @@ export default{
   },
   methods: {
     login () {
-      let parm = {
-        'email': this.form.email,
-        password: this.form.password
-      }
-      loginAPI(parm).then(res => {
-        console.log(res)
-      })
+      this.$router.push('/index/home')
+      // let parm = {
+      //   'email': this.form.email,
+      //   password: this.form.password
+      // }
+      // loginAPI(parm).then(res => {
+      //   console.log(res)
+      // })
     }
   }
 }

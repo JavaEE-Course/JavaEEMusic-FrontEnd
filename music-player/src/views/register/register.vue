@@ -7,7 +7,7 @@
       <vue-particles color="#FFFAFA" :particleOpacity="0.5" :particlesNumber="150"  :particleSize="4" linesColor="FFFAFA" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="150" :moveSpeed="3" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push"/>
     </div>
     <el-card class="Register_Card" style="border-radius: 12px">
-      <el-row>
+      <el-row justify="center">
         <el-col>
           <el-form
             ref="RegisterForm"
@@ -208,7 +208,7 @@ export default {
     border-color: #2e0f6d;
     color: #fff;
   }
-  .Register_Form{
-    transform: translateX(2%);
-  }
+  /*.Register_Form{*/
+  /*  transform: translateX(2%);*/
+  /*}*/
 </style>
