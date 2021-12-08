@@ -1,0 +1,16 @@
+{
+  "id": "2979635",
+  "name": "JavaEE",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "3762270",
+      "name": "音乐光盘",
+      "font_class": "yinleguangpan",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    }
+  ]
+}

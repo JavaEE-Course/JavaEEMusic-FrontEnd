@@ -80,7 +80,7 @@ export default{
   },
   methods: {
     login () {
-      this.$router.push('/index/home')
+      this.$router.push('/index')
       // let parm = {
       //   'email': this.form.email,
       //   password: this.form.password

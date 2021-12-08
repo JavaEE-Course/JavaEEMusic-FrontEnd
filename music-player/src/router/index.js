@@ -11,14 +11,41 @@ export default new Router({
       component: () => import('@/views/login/login')
     },
     {
-      path: '/home',
-      name: 'Home',
-      component: () => import('@/views/home/index')
+      path: '/index',
+      name: 'index',
+      component: () => import('@/views/home/index'),
+      children: [
+        {
+          path: '/index/first',
+          name: 'first',
+          component: () => import('@/views/home/first')
+        },
+        {
+          path: '/index/songlist',
+          name: 'songlist',
+          component: () => import('@/views/home/songlist')
+        },
+        {
+          path: '/index/singer',
+          name: 'singer',
+          component: () => import('@/views/home/singer')
+        },
+        {
+          path: '/index/mymusic',
+          name: 'mymusic',
+          component: () => import('@/views/home/mymusic')
+        }
+      ]
     },
     {
       path: '/register',
       name: 'Register',
       component: () => import('@/views/register/register')
+    },
+    {
+      path: '/forgetpassword',
+      name: 'ForgetPassword',
+      component: () => import('@/views/register/forgetpassword')
     }
   ]
 })
