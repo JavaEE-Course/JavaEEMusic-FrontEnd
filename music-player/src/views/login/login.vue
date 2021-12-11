@@ -68,7 +68,6 @@
 </template>
 
 <script>
-import storage from 'good-storage'
 import { loginAPI } from '../../api/login'
 export default{
   data () {
@@ -93,10 +92,10 @@ export default{
       loginAPI(parm).then(res => {
         console.log(res)
         if (res.data.code === 200) {
-          storage.set('user_id', res.data.data)
-          this.$router.push('/index')
-        } else {
-          this.$message('密码不正确，请重新登录')
+          // storage.set('user_id', res.data.data)
+          // this.$router.push('/index')
+        // } else {
+        //   this.$message('密码不正确，请重新登录')
           this.$message({
             type: 'success',
             message: '登录成功！'
