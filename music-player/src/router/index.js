@@ -16,7 +16,7 @@ export default new Router({
       component: () => import('@/views/home/index'),
       children: [
         {
-          path: '/index/first',
+          path: '/index',
           name: 'first',
           component: () => import('@/views/home/first')
         },
