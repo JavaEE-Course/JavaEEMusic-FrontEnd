@@ -1,22 +1,3 @@
-<!--<template>-->
-<!--  <top-side-bar />-->
-<!--</template>-->
-
-<!--<script>-->
-<!--import TopSideBar from '../../components/TopSidebar'-->
-<!--export default {-->
-<!--  name: 'Home',-->
-<!--  components: {TopSideBar},-->
-<!--  data () {-->
-<!--  },-->
-<!--  methods: {}-->
-<!--}-->
-<!--</script>-->
-
-<!--<style scoped>-->
-
-<!--</style>-->
-
 <template>
   <div>
     <div class="Img_Box">
@@ -25,10 +6,6 @@
     <div class="Img_Box">
     <el-card class="Card" style="border-radius: 12px"></el-card>
     </div>
-<!--  <div>-->
-<!--    <el-button @click="click">anniu</el-button>-->
-<!--    <router-view></router-view>-->
-<!--  </div>-->
     <div class="nav">
       <ul class="nav-centent">
         <li class="icon iconfont icon-yinleguangpan" style="color: silver;margin-top: -8px"></li>
@@ -80,6 +57,11 @@ export default{
           name: '我的音乐'
         }
       ]
+    }
+  },
+  created () {
+    if (window.sessionStorage.getItem('userID') === null) {
+      this.$router.push({ path: '/login' })
     }
   },
   methods: {

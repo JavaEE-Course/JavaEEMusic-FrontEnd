@@ -34,7 +34,7 @@ export default {
         'user_id': 1
       }
       getsonglistAPI(parm).then(res => {
-        console.log('res:::::::'+res)
+        console.log('res:::::::' + res)
       })
     }
   }

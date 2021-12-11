@@ -68,7 +68,7 @@
 </template>
 
 <script>
-// import { loginAPI } from '@/api/login'
+import { loginAPI } from '../../api/login'
 export default{
   data () {
     return {
@@ -78,16 +78,35 @@ export default{
       }
     }
   },
+  created () {
+    if (window.sessionStorage.getItem('userID') !== null) {
+      this.$router.push({ path: '/' })
+    }
+  },
   methods: {
     login () {
-      this.$router.push('/index')
-      // let parm = {
-      //   'email': this.form.email,
-      //   password: this.form.password
-      // }
-      // loginAPI(parm).then(res => {
-      //   console.log(res)
-      // })
+      let parm = {
+        'email': this.form.email,
+        'password': require('js-sha256').sha256(this.form.password)
+      }
+      loginAPI(parm).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '登录成功！'
+          })
+          window.sessionStorage.setItem('userID', res.data.data)
+          this.$router.push({ path: '/' })
+        } else if (res.data.code === 500) {
+          this.$message({
+            type: 'error',
+            message: '邮箱或密码错误'
+          })
+          this.form.email = ''
+          this.form.password = ''
+        }
+      })
     }
   }
 }
