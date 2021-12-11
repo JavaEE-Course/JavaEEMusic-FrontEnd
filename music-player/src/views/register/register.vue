@@ -177,25 +177,6 @@ export default {
         this.cnt()
       }, 1000)
     },
-    // submitForm () {
-    //   let parm = {
-    //     'email': this.form.email
-    //   }
-    //   checkemailAPI(parm).then(res => {
-    //     if (res.data === 'true') {
-    //       this.$message('该邮箱已存在，请更换邮箱注册')
-    //     } else {
-    //       console.log('nikan')
-    //       let parm = {
-    //         'email': this.form.email,
-    //         'password': this.form.password,
-    //         'nickname': this.form.username,
-    //         'code': this.form.verifyEmail
-    //       }
-    //       registerAPI(parm).then(res => {
-    //         console.log(res)
-    //         this.$message('注册成功')
-    //       })
     sendEmail () {
       const params = {
         'email': this.form.email

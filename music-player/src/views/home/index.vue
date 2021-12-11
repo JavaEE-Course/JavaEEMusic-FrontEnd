@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="Img_Box">
-      <img src="../../assets/background.jpg" width="100%" height="100%" />
+      <img src="../../assets/1.jpg" width="100%" height="100%" />
     </div>
     <div class="Img_Box">
     <el-card class="Card" style="border-radius: 12px"></el-card>
@@ -68,7 +68,7 @@ export default{
     click (item) {
       console.log(item.name)
       if (item.name === '首页') {
-        this.$router.push({path: '/index/first'})
+        this.$router.push({path: '/index'})
       }
       if (item.name === '歌单') {
         this.$router.push({path: '/index/songlist'})
@@ -96,11 +96,11 @@ export default{
     left: 0;
     width: 102%;
     z-index: -1;
-    -webkit-filter: blur(6px);
-    -moz-filter: blur(6px);
-    -o-filter: blur(6px);
-    -ms-filter: blur(6px);
-    filter: blur(6px);
+    /*-webkit-filter: blur(6px);*/
+    /*-moz-filter: blur(6px);*/
+    /*-o-filter: blur(6px);*/
+    /*-ms-filter: blur(6px);*/
+    /*filter: blur(6px);*/
   }
   .nav{width:103.5%;height: 50px;background: #2e0f6d; margin-top: -60px;margin-left: -8px;margin-right: -8px;position: fixed;z-index: 1000;}
   .nav .nav-centent{width: 1200px;margin:0 auto;height: 50px;}
