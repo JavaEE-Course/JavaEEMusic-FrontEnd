@@ -22,9 +22,6 @@
     <div class="Img_Box">
       <img src="../../assets/background.jpg" width="100%" height="100%" />
     </div>
-    <div class="Img_Box">
-    <el-card class="Card" style="border-radius: 12px"></el-card>
-    </div>
 <!--  <div>-->
 <!--    <el-button @click="click">anniu</el-button>-->
 <!--    <router-view></router-view>-->
@@ -108,29 +105,19 @@ export default{
 </script>
 <style type="text/css" scoped>
   .Img_Box {
-    position: absolute;
+    height: fit-content;
+    position: fixed;
     top: 0;
     left: 0;
     width: 102%;
-    height: 100%;
     z-index: -1;
+    -webkit-filter: blur(6px);
+    -moz-filter: blur(6px);
+    -o-filter: blur(6px);
+    -ms-filter: blur(6px);
+    filter: blur(6px);
   }
-  .Card {
-    height: 100%;
-    width: 99%;
-    background: rgba(255, 255, 255, 0.2);
-    display: flex;
-    flex-direction: column;
-    backdrop-filter: blur(4px);
-    padding: 10px;
-    margin: auto;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  .nav{width:103.5%;height: 50px;background: #2e0f6d; margin-top: -60px;margin-left: -8px;margin-right: -8px}
+  .nav{width:103.5%;height: 50px;background: #2e0f6d; margin-top: -60px;margin-left: -8px;margin-right: -8px;position: fixed;z-index: 1000;}
   .nav .nav-centent{width: 1200px;margin:0 auto;height: 50px;}
   .nav .nav-centent > li{width: 100px;height: 50px;display: block;float: left;}
   .nav .nav-centent li a{width: 100px;height: 50px;display: block;font-size: 18px;line-height: 50px;color: #fff;}

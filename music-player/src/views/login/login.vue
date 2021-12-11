@@ -68,7 +68,8 @@
 </template>
 
 <script>
-// import { loginAPI } from '@/api/login'
+import storage from 'good-storage'
+import { loginAPI } from '@/api/login'
 export default{
   data () {
     return {
@@ -80,14 +81,19 @@ export default{
   },
   methods: {
     login () {
-      this.$router.push('/index')
-      // let parm = {
-      //   'email': this.form.email,
-      //   password: this.form.password
-      // }
-      // loginAPI(parm).then(res => {
-      //   console.log(res)
-      // })
+      let parm = {
+        'email': this.form.email,
+        password: this.form.password
+      }
+      loginAPI(parm).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          storage.set('user_id', res.data.data)
+          this.$router.push('/index')
+        } else {
+          this.$message('密码不正确，请重新登录')
+        }
+      })
     }
   }
 }
