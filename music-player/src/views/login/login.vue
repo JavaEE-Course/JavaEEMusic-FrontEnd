@@ -69,7 +69,7 @@
 
 <script>
 import storage from 'good-storage'
-import { loginAPI } from '@/api/login'
+import { loginAPI } from '../../api/login'
 export default{
   data () {
     return {
@@ -79,11 +79,16 @@ export default{
       }
     }
   },
+  created () {
+    if (window.sessionStorage.getItem('userID') !== null) {
+      this.$router.push({ path: '/' })
+    }
+  },
   methods: {
     login () {
       let parm = {
         'email': this.form.email,
-        password: this.form.password
+        'password': require('js-sha256').sha256(this.form.password)
       }
       loginAPI(parm).then(res => {
         console.log(res)
@@ -92,6 +97,19 @@ export default{
           this.$router.push('/index')
         } else {
           this.$message('密码不正确，请重新登录')
+          this.$message({
+            type: 'success',
+            message: '登录成功！'
+          })
+          window.sessionStorage.setItem('userID', res.data.data)
+          this.$router.push({ path: '/' })
+        } else if (res.data.code === 500) {
+          this.$message({
+            type: 'error',
+            message: '邮箱或密码错误'
+          })
+          this.form.email = ''
+          this.form.password = ''
         }
       })
     }

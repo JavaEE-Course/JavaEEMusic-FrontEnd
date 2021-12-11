@@ -118,8 +118,7 @@ export default {
         'user_id': storage.get('user_id', 0)
       }
       getsonglistAPI(parm).then(res => {
-        console.log('res:::::::' + res.data)
-        console.log(res)
+        console.log('res:::::::' + res)
       })
     }
   }

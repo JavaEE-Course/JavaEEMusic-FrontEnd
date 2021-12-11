@@ -92,13 +92,15 @@
 import { sendemailAPI } from '@/api/sendemail'
 import { registerAPI } from '@/api/register'
 import { checkemailAPI } from '@/api/checkemail'
+import {registerAPI, emailVerification} from '../../api/register'
+
 export default {
   props: ['type'],
   data () {
     return {
       // 发送邮箱避免频繁发送
       timeCnt: '验证',
-      isOK: false,
+      isOK: true,
       cnthandler: null,
       form: {
         username: '',
@@ -122,7 +124,7 @@ export default {
           {
             pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,10}$/,
             message:
-                '必须包含大小写字母和数字的组合，不能使用特殊字符，长度在 8-10 之间',
+                '必须包含大小写字母和数字的组合，长度在 8-10 之间',
             trigger: 'blur'
           }
         ],
@@ -141,12 +143,28 @@ export default {
         ],
         email: [
           {required: true, message: '请输入邮箱', trigger: 'change'},
-          {type: 'email', message: '请填写正确的邮箱', trigger: 'change'}
+          {
+            validator: (rule, value, callback) => {
+              if ((/^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/).test(value)) {
+                this.isOK = false
+                callback()
+              } else {
+                this.isOK = true
+                callback(new Error('请填写正确的邮箱'))
+              }
+            },
+            trigger: 'change'
+          }
         ],
         verifyEmail: [
           {required: true, message: '请输入验证码', trigger: 'change'}
         ]
       }
+    }
+  },
+  created () {
+    if (window.sessionStorage.getItem('userID') !== null) {
+      this.$router.push({ path: '/' })
     }
   },
   methods: {
@@ -161,19 +179,6 @@ export default {
         this.timeCnt--
         this.cnt()
       }, 1000)
-    },
-    sendEmail () {
-      this.timeCnt = 300
-      this.isOK = true
-      this.cnt()
-      console.log('email' + this.form.email)
-      let parm = {
-        'email': this.form.email
-      }
-      sendemailAPI(parm).then(res => {
-        console.log(res)
-        this.$message('验证码发送成功')
-      })
     },
     submitForm () {
       console.log('nihaoa')
@@ -195,6 +200,49 @@ export default {
             console.log(res)
             this.$message('注册成功')
           })
+    sendEmail () {
+      const params = {
+        'email': this.form.email
+      }
+      emailVerification(params).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '成功发送验证码，请注意查收'
+          })
+        }
+      })
+    },
+    submitForm () {
+      const params = {
+        'nickname': this.form.username,
+        'password': require('js-sha256').sha256(this.form.password),
+        'email': this.form.email,
+        'code': this.form.verifyEmail
+      }
+      if (!(this.form.verifyEmail.length && this.form.username && this.form.password && this.form.verifyEmail && this.form.checkPassword)) {
+        this.$message({
+          type: 'error',
+          message: '请输入全部的信息'
+        })
+        return
+      }
+      registerAPI(params).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '注册成功！'
+          })
+          this.$router.push({ path: '/login' })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '邮箱已被注册过，请使用其它邮箱!'
+          })
+          this.form.email = ''
+          this.form.verifyEmail = ''
         }
       })
     }
