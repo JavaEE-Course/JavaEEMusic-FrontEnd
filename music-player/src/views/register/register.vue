@@ -161,7 +161,7 @@ export default {
   },
   created () {
     if (window.sessionStorage.getItem('userID') !== null) {
-      this.$router.push({ path: '/' })
+      this.$router.push({ path: '/index' })
     }
   },
   methods: {
