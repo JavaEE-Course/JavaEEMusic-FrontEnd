@@ -7,3 +7,11 @@ export function getsingerAPI (params) {
     params
   })
 }
+
+export function getFollowSingerAPI (params) {
+  return request({
+    url: '',
+    method: '',
+    params
+  })
+}
