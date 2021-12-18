@@ -25,7 +25,7 @@
         <li>
           <el-dropdown class="drop" trigger="click" @command="handleCommand" style="color: white">
                     <span class="el-dropdown-link" trigger="click">
-                      {{ name }}<i class="el-icon-arrow-down el-icon--right"></i>
+                      <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="accountInfo">账号信息</el-dropdown-item>
@@ -35,11 +35,14 @@
         </li>
       </ul>
     </div>
+<!--    <Bottom></Bottom>-->
     <router-view></router-view>
   </div>
 </template>
 <script type="text/javascript">
+// import Bottom from '../../components/Bottom.vue'
 export default{
+  // components: {Bottom},
   data () {
     return {
       nowIndex: 0,
@@ -79,11 +82,12 @@ export default{
       if (item.name === '我的音乐') {
         this.$router.push({path: '/index/mymusic'})
       }
+    },
+    handleCommand (command) {
+      if (command === 'accountInfo') {
+        this.$router.push({ path: '/index/userinfo' })
+      }
     }
-    // click () {
-    //   console.log('jinlaile')
-    //   this.$router.push({path: '/index/first'})
-    // }
   }
 }
 
@@ -96,11 +100,6 @@ export default{
     left: 0;
     width: 102%;
     z-index: -1;
-    /*-webkit-filter: blur(6px);*/
-    /*-moz-filter: blur(6px);*/
-    /*-o-filter: blur(6px);*/
-    /*-ms-filter: blur(6px);*/
-    /*filter: blur(6px);*/
   }
   .nav{width:103.5%;height: 50px;background: #2e0f6d; margin-top: -60px;margin-left: -8px;margin-right: -8px;position: fixed;z-index: 1000;}
   .nav .nav-centent{width: 1200px;margin:0 auto;height: 50px;}

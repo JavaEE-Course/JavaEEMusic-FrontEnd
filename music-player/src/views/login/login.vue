@@ -89,7 +89,6 @@ export default{
         'email': this.form.email,
         'password': require('js-sha256').sha256(this.form.password)
       }
-      debugger
       loginAPI(parm).then(res => {
         console.log(res)
         if (res.data.code === 200) {
