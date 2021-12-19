@@ -8,7 +8,6 @@
         <!--歌手列表-->
         <el-tabs v-model="activeName" style="margin-top: 10px;margin-left: 10px;margin-right: 10px;" @tab-click="handleTabClick">
           <el-tab-pane label="全部歌手" name="first" >
-            <!--歌手测试-->
             <div class="discover">
               <div class="songs-wrap">
                 <div class="list">
@@ -30,6 +29,7 @@
         </el-tabs>
 
       <!--分页符-->
+      <!--TODO:页面内容可能需要修改-->
       <el-pagination
         background
         @current-change="handlePageChange"
@@ -47,6 +47,8 @@ import { getsingerAPI } from '@/api/getsinger'
 export default {
   data () {
     return {
+      // 加载
+      loading: true,
       // 隐藏信息栏
       singerInfo: '',
       singerPhoto: '',
@@ -162,7 +164,8 @@ export default {
 }
 .footer{
   position:absolute;
-  bottom:10px;
-  left: 43%;
+  bottom: 10px;
+  margin: auto;
+  left: 0;right: 0;
 }
 </style>
