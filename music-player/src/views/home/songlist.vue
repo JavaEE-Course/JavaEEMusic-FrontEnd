@@ -1,5 +1,6 @@
 <template>
     <div class="recommend">
+<!--      // 上部精品歌单-->
       <div class="top-card-wrap">
         <img :src="highQuality.playlist_picture" class="bg-blur" alt="bg-blur">
         <div class="top-card">
@@ -13,19 +14,41 @@
           </div>
         </div>
       </div>
-      <div class="discover" v-loading="loading" style="align: center">
-        <div class="songs-wrap">
-          <div class="list">
-            <ul style="margin-left: -35px">
-              <li class="iconfont icon-play" v-for="(item,index) in playList" :key="index" @click="toPlaylistDetail(item.playlist_id)">
-                <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
-                <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
-                <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
-              </li>
-            </ul>
+<!--      //下部分歌单列表-->
+      <el-tabs v-model="activeName" style="margin-left: 10px;margin-right: 10px;margin-top: 10px;" @tab-click="handleTabClick">
+        <el-tab-pane label="全部" name="first" >
+          <div class="discover" v-loading="loading" style="align: center;margin-top: -30px">
+            <div class="songs-wrap">
+              <div class="list">
+                <ul style="margin-left: -35px">
+                  <li v-for="(item,index) in allPageList[allPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                    <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
+                    <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
+                    <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </el-tab-pane>
+        <el-tab-pane label="欧美" name="second" ></el-tab-pane>
+        <el-tab-pane label="华语" name="third" ></el-tab-pane>
+        <el-tab-pane label="流行" name="fourth" ></el-tab-pane>
+        <el-tab-pane label="说唱" name="fifth" ></el-tab-pane>
+        <el-tab-pane label="摇滚" name="sixth" ></el-tab-pane>
+        <el-tab-pane label="民谣" name="seventh" ></el-tab-pane>
+        <el-tab-pane label="影视" name="eighth" ></el-tab-pane>
+
+      </el-tabs>
+      <el-pagination
+        background
+        @current-change="handlePageChange"
+        layout="prev, pager, next"
+        :page-size = "5"
+        :current-page.sync = "currentPage"
+        :total="playList.length"
+        class="footer" id="footer">
+      </el-pagination>
     </div>
 </template>
 
@@ -38,18 +61,45 @@ export default {
       this.playList = res.data.data
       this.highQuality = this.playList[0]
       this.loading = false
+      let pageData = []
+      for (let i = 0; i < this.playList.length; i++) {
+        pageData.push(this.playList[i])
+        if (pageData.length % 5 === 0) {
+          this.allPageList.push(pageData)
+          pageData = []
+        }
+      }
+      this.allPageList.push(pageData)
     })
   },
   data () {
     return {
+      // 歌单列表相关
       playList: [],
       highQuality: [],
-      loading: true
+      loading: true,
+      activeName: 'first',
+      currentPage: 0,
+      // 所有歌单
+      allPageList: [],
+      allPageNumber: 0
+      // 其它歌单
     }
   },
   methods: {
     toPlaylistDetail (id) {
       this.$router.push(`/index/playlistdetail?id=${id}`)
+    },
+    handleTabClick () {
+      if (this.activeName !== 'first') {
+        this.allPageNumber = 0
+        this.currentPage = 1
+      }
+    },
+    handlePageChange: function (val) {
+      if (this.activeName === 'first') {
+        this.allPageNumber = val - 1
+      }
     }
   }
 }
@@ -195,5 +245,11 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-top: -5px;
+  }
+  .footer{
+    position:absolute;
+    bottom: 10px;
+    margin: auto;
+    left: 0;right: 0;
   }
 </style>

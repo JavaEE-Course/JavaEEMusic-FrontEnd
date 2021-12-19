@@ -49,6 +49,11 @@ export default new Router({
           path: '/index/userinfo',
           name: 'userinfo',
           component: () => import('@/views/userInfo/index')
+        },
+        {
+          path: '/index/albumdetail',
+          name: 'albumdetail',
+          component: () => import('@/views/home/albumdetail')
         }
       ]
     },
