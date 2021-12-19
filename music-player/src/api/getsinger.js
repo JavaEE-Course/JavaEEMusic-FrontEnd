@@ -15,3 +15,11 @@ export function getFollowSingerAPI (params) {
     params
   })
 }
+
+export function getSingerDetailAPI (params) {
+  return request({
+    url: `api/singer/detail`,
+    method: 'get',
+    params
+  })
+}

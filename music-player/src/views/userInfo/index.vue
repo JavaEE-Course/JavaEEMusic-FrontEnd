@@ -10,25 +10,25 @@
       <el-card class="card" shadow="hover" style="height:290px;width: 65%;margin-top: 120px" ref="elCard" v-bind:style="elCard">
         <el-row>
           <el-col :span="6">
-            <div class="playlist-img-wrap">
+            <div class="singer-img-wrap">
             <img :src="userinfo.avatorPath" alt="">
             </div>
           </el-col>
           <el-col :span="18">
             <div class="right">
-              <div class="playlist-name">
+              <div class="singer-name">
                 <div class="tag1">用户信息</div>
               </div>
-              <div class="playlist-user-info" style="margin-top: 10px">
+              <div class="singer-user-info" style="margin-top: 10px">
                 <span>用户昵称：{{userinfo.nickname}}</span>
               </div>
-              <div class="playlist-user-info" style="margin-top: 10px">
+              <div class="singer-user-info" style="margin-top: 10px">
                 <span>用户邮箱：{{userinfo.email}}</span>
               </div>
-              <div class="playlist-user-info" style="margin-top: 10px">
+              <div class="singer-user-info" style="margin-top: 10px">
                 <span>用户密码：{{userinfo.password}}</span>
               </div>
-              <div class="playlist-user-info" style="margin-top: 10px">
+              <div class="singer-user-info" style="margin-top: 10px">
                 <span>用户性别：{{userinfo.gender}}</span>
               </div>
               <div>
@@ -130,11 +130,11 @@ export default {
     margin: auto;
     display: flex;
   }
-  .playlist-img-wrap {
+  .singer-img-wrap {
     width: 200px;
     height: 250px;
   }
-  .playlist-img-wrap img {
+  .singer-img-wrap img {
     width: 100%;
     height: 100%;
   }
@@ -142,13 +142,13 @@ export default {
   .right{
     margin-left: 80px;
   }
-  .playlist-name {
+  .singer-name {
     font-size: 25px;
     font-weight: 600;
     display: flex;
     align-items: center;
   }
-  .playlist-user-info {
+  .singer-user-info {
     display: flex;
     align-items: center;
     font-size: 18px;

@@ -25,7 +25,7 @@
         <div class="songs-wrap">
           <div class="list">
             <ul style="margin-left: -35px">
-              <li class="iconfont icon-play" v-for="(item,index) in singerList" :key="index" @click="toPlaylistDetail(item.id)">
+              <li class="iconfont icon-play" v-for="(item,index) in singerList" :key="index" @click="toSingerDetail(item.id)">
                 <p class="first-p" style="margin-top: 0.3px">{{item.name}}</p>
                 <img :src="item.url" alt="rec" style="height: 140px;margin-top: -10px">
                 <p class="last-p" :title="item.name">{{item.introduction}}</p>
@@ -100,6 +100,9 @@ export default {
         this.singerList = res.data.data
         this.loading = false
       })
+    },
+    toSingerDetail (id) {
+      this.$router.push(`/index/singerDetail?id=${id}`)
     }
   }
 }
