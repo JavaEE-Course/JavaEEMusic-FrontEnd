@@ -13,7 +13,7 @@
             <span>歌手：{{albumInfo.singer_name}}</span>
           </div>
         </div>
-        <div class="playAllBtn iconfont icon-play" @click="playAll"> 播放全部</div>
+        <div class="playAllBtn iconfont icon-play"> 播放全部</div>
         <div class="playlist-desc">
           <span>简介：</span>
           <span :title="albumInfo.introduction">{{albumInfo.introduction}}</span>
@@ -25,17 +25,12 @@
         <el-tab-pane label="歌曲列表">
           <div class="table">
             <el-table :data="songlists"
-                      @row-dblclick="play"
                       v-el-table-infinite-scroll="loadMore"
                       infinite-scroll-delay=500
                       infinite-scroll-disabled="noMore">
               <el-table-column prop="song_name" label="音乐标题"></el-table-column>
-              <el-table-column prop="song_name" label="歌手"></el-table-column>
-              <el-table-column prop="song_name" label="专辑" >
-<!--                <template slot-scope="scope">-->
-<!--                  <span style="cursor:pointer;color:#04588e;" @click="toAlbum(scope.row.album_id)">{{scope.row.album_name}}</span>-->
-<!--                </template>-->
-              </el-table-column>
+              <el-table-column label="歌手">{{albumInfo.singer_name}}</el-table-column>
+              <el-table-column label="专辑">{{albumInfo.album_name}}</el-table-column>
             </el-table>
           </div>
         </el-tab-pane>
@@ -61,12 +56,6 @@ export default {
     return {
       albumInfo: {},
       songlists: []
-    }
-  },
-  methods: {
-    toAlbum (albumid) {
-      console.log(albumid)
-      this.$router.push(`/index/albumdetail?id=${albumid}`)
     }
   }
 }

@@ -11,7 +11,9 @@
         <el-row>
           <el-col :span="6">
             <div class="singer-img-wrap">
-            <img :src="userinfo.avatorPath" alt="">
+              <el-card style="height: 250px;" @click.native="avatorV=true">
+                <img :src="userinfo.avatorPath" alt="">
+              </el-card>
             </div>
           </el-col>
           <el-col :span="18">
@@ -26,9 +28,6 @@
                 <span>用户邮箱：{{userinfo.email}}</span>
               </div>
               <div class="singer-user-info" style="margin-top: 10px">
-                <span>用户密码：{{userinfo.password}}</span>
-              </div>
-              <div class="singer-user-info" style="margin-top: 10px">
                 <span>用户性别：{{userinfo.gender}}</span>
               </div>
               <div>
@@ -40,6 +39,36 @@
       </el-card>
     </div>
     <div class="dialog">
+      <el-dialog title="修改头像" :visible.sync="avatorV">
+<!--        <el-upload-->
+<!--          class="avatar-uploader"-->
+<!--          action="https://jsonplaceholder.typicode.com/posts/"-->
+<!--          :on-success="handleAvatarSuccess"-->
+<!--          :show-file-list="false">-->
+<!--          <img v-if="imageUrl" :src="imageUrl" class="avatar">-->
+<!--          <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
+<!--        </el-upload>-->
+        <el-upload ref="upload"
+                   action="#"
+                   accept="image/png,image/gif,image/jpg,image/jpeg"
+                   list-type="picture-card"
+                   :auto-upload="false"
+                   :on-exceed="handleExceed"
+                   :before-upload="handleBeforeUpload"
+                   :on-preview="handlePictureCardPreview"
+                   :on-remove="handleRemove"
+                   :on-change="imgChange"
+                   :class="{hide:hideUpload}">
+          <i class="el-icon-plus"></i>
+          <img width="100%"
+               :src="ImageUrl"
+               alt="">
+        </el-upload>
+        <div slot="footer" class="dialog-footer" style="margin-top: -20px">
+          <el-button @click="avatorV = false">取 消</el-button>
+          <el-button type="primary" @click="avatorSubmit">确 定</el-button>
+        </div>
+      </el-dialog>
       <el-dialog title="修改个人信息" :visible.sync="dialogVisible">
         <el-form :model="meform">
           <el-form-item label="请输入新昵称" :label-width="formLabelWidth" style="margin-top: -20px">
@@ -57,7 +86,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="margin-top: -20px">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="loadbook">确 定</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -65,27 +94,25 @@
 </template>
 
 <script>
-import { getuserinfoAPI } from '@/api/getuserinfo'
+import { getuserinfoAPI, edituserinfoAPI } from '@/api/getuserinfo'
 export default {
   created () {
     this.flashColor()
-    // let parm = {
-    //   'id': storage.get('user_id', 0)
-    // }
-    getuserinfoAPI().then(res => {
-      console.log(res)
+    let parm = {
+      'id': window.sessionStorage.getItem('userID')
+    }
+    getuserinfoAPI(parm).then(res => {
+      console.log('nikan')
+      console.log(res.data)
+      this.userinfo = res.data.data
     })
   },
   data () {
     return {
+      imageUrl: '',
       dialogVisible: false,
-      userinfo: {
-        email: '1234232133@qq.com',
-        nickname: 'nzh',
-        password: 'as66',
-        gender: '男',
-        avatorPath: 'https://p2.music.126.net/c6Rddgfp3nKG-cPhyn4STg==/109951166485018774.jpg'
-      },
+      avatorV: false,
+      userinfo: {},
       meform: {
         email: '',
         nickname: '',
@@ -110,6 +137,27 @@ export default {
       } else {
         setTimeout(this.flashColor, 300)
       }
+    },
+    submit () {
+      let parm = {
+        'id': window.sessionStorage.getItem('userID'),
+        'email': this.meform.email,
+        'password': this.meform.password,
+        'gender': this.meform.gender,
+        'nickname': this.meform.nickname,
+        'avatar': this.meform.avatar
+      }
+      edituserinfoAPI(parm).then(res => {
+        console.log(res.data)
+      })
+    },
+    handleAvatarSuccess (res, file) {
+      console.log('nihao')
+      this.imageUrl = URL.createObjectURL(file.raw)
+      console.log(this.imageUrl)
+    },
+    avatorSubmit () {
+      console.log(this.imageUrl)
     }
   }
 }
@@ -165,5 +213,28 @@ export default {
   }
   .dialog /deep/ .el-dialog__footer {
     background-color:#77aee5;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
   }
 </style>

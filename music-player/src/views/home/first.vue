@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import storage from 'good-storage'
 import { swiperList } from '../../assets/data/swiper'
 import { getmyplaylistAPI, getotherplaylistAPI, getdailyplaylistAPI } from '@/api/getsonglist'
 import { getsingerAPI } from '@/api/getsinger'
@@ -82,22 +81,31 @@ export default {
   methods: {
     getSongList () {
       let parm = {
-        'user_id': storage.get('user_id', 0)
+        'user_id': window.sessionStorage.getItem('userID')
+      }
+      let parm1 = {
+        'id': window.sessionStorage.getItem('userID')
       }
       getmyplaylistAPI(parm).then(res => {
+        console.log('my')
         console.log(res.data)
       })
-      getotherplaylistAPI().then(res => {
+      getotherplaylistAPI(parm1).then(res => {
+        console.log('getother')
         console.log(res.data)
       })
-      getdailyplaylistAPI().then(res => {
+      getdailyplaylistAPI(parm1).then(res => {
+        console.log('daily')
         console.log(res.data)
       })
     },
     getSingerList () {
       getsingerAPI().then(res => {
         console.log(res.data)
-        this.singerList = res.data.data
+        let pageData = res.data.data
+        for (let i = 1; i < 6; i++) {
+          this.singerList.push(pageData[i])
+        }
         this.loading = false
       })
     },
