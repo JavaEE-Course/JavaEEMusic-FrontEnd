@@ -41,8 +41,7 @@
     layout="prev, pager, next"
     :page-size = "10"
     :current-page.sync = "currentPage"
-    :total.sync= "getTotalPage"
-    v-show="pageVisible"
+    :total.sync= "totalPageNumber"
     class="footer">
   </el-pagination>
 </div>
@@ -59,8 +58,8 @@ export default {
       // 导航栏
       activeName: 'first',
       // 分页符
-      pageVisible: false,
-      currentPage: 0,
+      totalPageNumber: 0,
+      currentPage: 1,
       playListPageList: [],
       playListPageNumber: 0,
       // 歌手
@@ -83,6 +82,7 @@ export default {
     // 获取我的歌单
     getmyplaylistAPI(userId).then(res => {
       this.playList = res.data.data
+      this.totalPageNumber = this.playList.length
       this.loading = false
       let pageData = []
       for (let i = 0; i < this.playList.length; i++) {
@@ -100,8 +100,9 @@ export default {
     handleTabClick () {
       if (this.activeName !== 'first') {
         this.playListPageNumber = 0
-        this.currentPage = 1
       }
+      this.totalPageNumber = this.getTotalPage()
+      this.currentPage = 1
     },
     // 分页符
     handlePageChange (val) {
@@ -111,12 +112,8 @@ export default {
     },
     getTotalPage () {
       if (this.activeName === 'first') {
-        if (this.playList.length > 10) {
-          this.pageVisible = true
-          return this.playList.length
-        }
+        return this.playList.length
       } else {
-        // TODO: 歌手的信息
         return 0
       }
     },
@@ -160,7 +157,7 @@ export default {
 .songs-wrap .list ul{
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   flex-wrap: wrap;
 }
 .songs-wrap .list li {
