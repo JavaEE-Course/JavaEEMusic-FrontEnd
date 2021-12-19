@@ -21,3 +21,11 @@ export function getdailyplaylistAPI (params) {
     params
   })
 }
+
+export function getSongDetailAPI (params) {
+  return request({
+    url: 'api/song/get/songDetails',
+    method: 'get',
+    params
+  })
+}

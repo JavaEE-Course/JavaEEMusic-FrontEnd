@@ -23,3 +23,11 @@ export function getSingerDetailAPI (params) {
     params
   })
 }
+
+export function followAndUnfollowAPI (params) {
+  return request({
+    url: 'api/user/followOrUnFollow',
+    method: 'get',
+    params
+  })
+}

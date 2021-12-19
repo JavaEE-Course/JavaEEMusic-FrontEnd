@@ -73,9 +73,9 @@ export default new Router({
       component: () => import('@/views/register/forgetpassword')
     },
     {
-      path: '/test',
-      name: 'Test',
-      component: () => import('../views/test/test')
+      path: '/playMusic',
+      name: 'PlayMusic',
+      component: () => import('@/views/song/playMusic')
     }
   ]
 })

@@ -28,7 +28,7 @@
         <el-tab-pane label="专辑列表">
           <div class="table">
             <el-table :data="singerAlbums"
-                      @row-dblclick="toPlaylistDetail"
+                      @row-dblclick="toAlbumDetail"
                       infinite-scroll-delay=500
                       infinite-scroll-disabled="noMore"
                       :row-class-name="albumTable">
@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { getSingerDetailAPI, getFollowSingerAPI } from '../../api/getsinger'
-
+// eslint-disable-next-line standard/object-curly-even-spacing
+import { getSingerDetailAPI, getFollowSingerAPI, followAndUnfollowAPI} from '../../api/getsinger'
 export default {
   name: 'SingerDetail',
   data () {
@@ -65,13 +65,15 @@ export default {
       this.singerAlbums = res.data.data.albums
     })
     // 判断是否关注这个歌手
+    console.log(userId)
     getFollowSingerAPI(userId).then(res => {
       const singerList = res.data.data
+      console.log(userId)
+      console.log(singerList)
       let tag = false
       const singerID = Number(this.$route.query.id)
       for (let i = 0; i < singerList.length; i++) {
         if (singerList[i].id === singerID) {
-          console.log('呵呵')
           // 确实关注了这个歌手
           tag = true
           this.followVisible = true
@@ -80,16 +82,15 @@ export default {
         }
       }
       if (!tag) {
-        console.log('哈哈')
         this.followVisible = false
         this.unfollowVisible = true
       }
     })
   },
   methods: {
-    toPlaylistDetail (row, event, column) {
+    toAlbumDetail (row, event, column) {
       const id = this.singerAlbums[row.row_index].id
-      this.$router.push(`/index/playlistdetail?id=${id}`)
+      this.$router.push(`/index/albumdetail?id=${id}`)
     },
     albumTable ({row, rowIndex}) {
       row.index = rowIndex + 1
@@ -101,10 +102,14 @@ export default {
       })
     },
     followAndUnfollow () {
+      const followList = {'id': window.sessionStorage.getItem('userID'), 'singerId': Number(this.$route.query.id)}
       if (this.followVisible === true) {
         // 已关注，需要取关
         this.followVisible = false
         this.unfollowVisible = true
+        followAndUnfollowAPI(followList).then(res => {
+          console.log(res)
+        })
         this.$message({
           message: '已取消关注歌手',
           type: 'error'
@@ -113,6 +118,9 @@ export default {
         // 没有关注，需要关注
         this.unfollowVisible = false
         this.followVisible = true
+        followAndUnfollowAPI(followList).then(res => {
+          console.log(res)
+        })
         this.$message({
           message: '已成功关注歌手',
           type: 'success'
