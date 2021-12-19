@@ -23,15 +23,19 @@
     <div class="playlist-tabs-wrap">
       <el-tabs>
         <el-tab-pane label="歌曲列表">
+          <div class="table">
+            <el-table :data="songlist"
+                      @row-dblclick="play"
+                      v-el-table-infinite-scroll="loadMore"
+                      infinite-scroll-delay=500
+                      infinite-scroll-disabled="noMore">
+              <el-table-column prop="song_name" label="音乐标题"></el-table-column>
+              <el-table-column prop="singer_name" label="歌手"></el-table-column>
+              <el-table-column prop="album_name" label="专辑" ></el-table-column>
+            </el-table>
+          </div>
         </el-tab-pane>
       </el-tabs>
-    </div>
-    <div>
-      <el-table :data="songlist">
-        <el-table-column prop="song_name" label="音乐标题"></el-table-column>
-        <el-table-column prop="singer_name" label="歌手"></el-table-column>
-        <el-table-column prop="album_name" label="专辑" ></el-table-column>
-      </el-table>
     </div>
   </div>
 </template>
@@ -59,92 +63,108 @@ export default {
 </script>
 
 <style scoped>
-  .playlist {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 20px;
+  /deep/.el-table, .el-table tr, .el-table td, .el-table th {
+    background-color: transparent!important;
+  }
+  .table /deep/ .el-table th {
+    background-color: transparent!important;
   }
 
-  .playlist-top-card {
-    display: flex;
+  .table /deep/ .el-table tr {
+    background-color: transparent!important;
   }
-
-  .playlist-img-wrap {
-    width: 200px;
-    height: 200px;
-  }
-
-  .playlist-img-wrap img {
+  .table /deep/.el-table::before {
+    left: 0;
+    bottom: 0;
     width: 100%;
-    height: 100%;
+    height: 0;
   }
+.playlist {
+max-width: 1300px;
+margin: 0 auto;
+padding: 20px;
+}
 
-  .playlist-info {
-    padding: 0 20px;
-    flex: 1;
-  }
+.playlist-top-card {
+display: flex;
+}
 
-  .playlist-info .tag1 {
-    color: #2e0f6d;
-    border: 1px solid #2e0f6d;
-    display: inline-block;
-    font-size: 20px;
-    margin-right: 10px;
-    border-radius: 5px;
-    padding: 0px 7px;
-    cursor: default;
-  }
+.playlist-img-wrap {
+width: 200px;
+height: 200px;
+}
 
-  .playlist-name {
-    font-size: 25px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-  }
+.playlist-img-wrap img {
+width: 100%;
+height: 100%;
+}
 
-  .playlist-user-info {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-  }
+.playlist-info {
+padding: 0 20px;
+flex: 1;
+}
 
-  .playAllBtn {
-    display: inline-block;
-    margin-right: 740px;
-    margin-top: 7px;
-    border-radius: 20px;
-    background: #2e0f6d;
-    padding: 3px 22px;
-    color: #fff;
-    font-size: 20px;
-  }
+.playlist-info .tag1 {
+color: #2e0f6d;
+border: 1px solid #2e0f6d;
+display: inline-block;
+font-size: 20px;
+margin-right: 10px;
+border-radius: 5px;
+padding: 0px 7px;
+cursor: default;
+}
 
-  .playlist-desc {
-    display: flex;
-    align-items: center;
-    margin-top: 7px;
-  }
-  .playlist-desc span:nth-of-type(2){
-    font-size: 14px;
-  }
+.playlist-name {
+font-size: 25px;
+font-weight: 600;
+display: flex;
+align-items: center;
+}
 
-  .playlist-tabs-wrap {
-    margin-top: 20px;
-  }
+.playlist-user-info {
+display: flex;
+align-items: center;
+font-size: 14px;
+}
 
-  .el-table td, .el-table th.is-leaf {
-    border-bottom: none;
-  }
+.playAllBtn {
+display: inline-block;
+margin-right: 740px;
+margin-top: 7px;
+border-radius: 20px;
+background: #2e0f6d;
+padding: 3px 22px;
+color: #fff;
+font-size: 20px;
+}
 
-  .el-table::before {
-    opacity: 0;
-  }
+.playlist-desc {
+display: flex;
+align-items: center;
+margin-top: 7px;
+}
+.playlist-desc span:nth-of-type(2){
+font-size: 14px;
+}
 
-  .songs-table {
-    width: 100%;
-  }
+.playlist-tabs-wrap {
+margin-top: 20px;
+}
 
-  /* 设置滚动条样式 */
+.el-table td, .el-table th.is-leaf {
+border-bottom: none;
+}
+
+.el-table::before {
+opacity: 0;
+}
+
+.songs-table {
+width: 100%;
+}
+
+/* 设置滚动条样式 */
   /* 滚动条整体样式 */
   .songs-table>>>::-webkit-scrollbar{
     width: 5px;

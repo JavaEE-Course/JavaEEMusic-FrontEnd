@@ -87,6 +87,10 @@ export default{
       if (command === 'accountInfo') {
         this.$router.push({ path: '/index/userinfo' })
       }
+      if (command === 'logout') {
+        window.sessionStorage.clear()
+        this.$router.push('/login')
+      }
     }
   }
 }
