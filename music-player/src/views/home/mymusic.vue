@@ -7,7 +7,7 @@
     <img :src="playListPhoto" alt="rec" style="height: 140px;margin-top: 3px;filter: drop-shadow(8px 8px 10px mediumpurple);">
   </div>
   <!--歌手悬浮窗-->
-  <div v-show="singerVisible" class="hover_con" :style="singerPositionStyle">
+  <div v-show="singerVisible" class="hover_playlist" :style="singerPositionStyle">
     <div style="margin-top: 3px;color: #6A5ACD" >  {{singerInfo}}</div>
     <img :src="singerPhoto" alt="rec" style="height: 140px;margin-top: 3px;filter: drop-shadow(8px 8px 10px mediumpurple);">
   </div>
@@ -31,7 +31,20 @@
       </div>
     </el-tab-pane>
     <el-tab-pane label="歌手" name="second" style="padding-left: 8px;font-size: 16px">
-
+      <div class="discover" v-loading="loading" style="align: center">
+        <div class="songs-wrap">
+          <div class="list">
+            <ul style="margin-left: -35px">
+              <li v-on:mouseover="changeSingerActive(item)" v-on:mouseout="removeSingerActive()" v-on:mousemove="updateSingerXY()" class=" icon-play" v-for="(item,index) in singerPageList[singerPageNumber]" :key="index" @click="toSingerDetail(item.id)">
+                <el-card class="card">
+                  <img :src="item.url" alt="rec" style="height: 140px;margin-top: -10px" class="img">
+                  <div class="word"  style="color: #6A5ACD">{{item.name}}</div>
+                </el-card>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </el-tab-pane>
   </el-tabs>
   <!--分页符-->
@@ -49,6 +62,7 @@
 
 <script>
 import { getmyplaylistAPI } from '../../api/getsonglist'
+import { getFollowSingerAPI } from '../../api/getsinger'
 
 export default {
   data () {
@@ -62,9 +76,12 @@ export default {
       currentPage: 1,
       playListPageList: [],
       playListPageNumber: 0,
+      singerPageList: [],
+      singerPageNumber: 0,
       // 歌手
       singerInfo: '',
       singerPhoto: '',
+      singerList: [],
       // 歌单
       playListInfo: '',
       playListPhoto: '',
@@ -74,11 +91,15 @@ export default {
       singerVisible: false,
       playListX: 0,
       playListY: 0,
-      playListPositionStyle: {top: '20px', left: '20px'}
+      singerX: 0,
+      singerY: 0,
+      playListPositionStyle: {top: '20px', left: '20px'},
+      singerPositionStyle: {top: '20px', left: '20px'}
     }
   },
   created () {
     const userId = {'user_id': window.sessionStorage.getItem('userID')}
+    const userId2 = {'userId': window.sessionStorage.getItem('userID')}
     // 获取我的歌单
     getmyplaylistAPI(userId).then(res => {
       this.playList = res.data.data
@@ -95,11 +116,26 @@ export default {
       this.playListPageList.push(pageData)
     })
     // 获取关注的歌手
+    getFollowSingerAPI(userId2).then(res => {
+      this.singerList = res.data.data
+      let pageData = []
+      for (let i = 0; i < this.singerList.length; i++) {
+        pageData.push(this.singerList[i])
+        if (pageData.length % 10 === 0) {
+          this.singerPageList.push(pageData)
+          pageData = []
+        }
+        this.singerPageList.push(pageData)
+      }
+    })
   },
   methods: {
     handleTabClick () {
       if (this.activeName !== 'first') {
         this.playListPageNumber = 0
+      }
+      if (this.activeName !== 'second') {
+        this.singerPageNumber = 0
       }
       this.totalPageNumber = this.getTotalPage()
       this.currentPage = 1
@@ -113,13 +149,16 @@ export default {
     getTotalPage () {
       if (this.activeName === 'first') {
         return this.playList.length
-      } else {
-        return 0
+      } else if (this.activeName === 'second') {
+        return this.singerList.length
       }
     },
     // 专辑
     toPlaylistDetail (id) {
       this.$router.push(`/index/playlistdetail?id=${id}`)
+    },
+    toSingerDetail (id) {
+      this.$router.push(`/index/singerDetail?id=${id}`)
     },
     // 悬浮窗
     // 歌单
@@ -142,8 +181,28 @@ export default {
       } else {
         this.playListPositionStyle = {top: this.playListY + 40 + 'px', left: this.playListX - 75 + 'px'}
       }
-    }
+    },
     // 歌手
+    changeSingerActive (item) {
+      this.singerInfo = item.name
+      this.singerPhoto = item.url
+      this.singerVisible = true
+    },
+    removeSingerActive () {
+      this.singerInfo = ''
+      this.singerPhoto = ''
+      this.singerVisible = false
+    },
+    updateSingerXY () {
+      const height = screen.height
+      this.singerX = event.pageX
+      this.singerY = event.pageY
+      if (this.singerY + 348 > height) {
+        this.singerPositionStyle = {top: this.singerY - 220 + 'px', left: this.singerX - 75 + 'px'}
+      } else {
+        this.singerPositionStyle = {top: this.singerY + 40 + 'px', left: this.singerX - 75 + 'px'}
+      }
+    }
   }
 }
 </script>

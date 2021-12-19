@@ -10,7 +10,7 @@ export function getsingerAPI (params) {
 
 export function getFollowSingerAPI (params) {
   return request({
-    url: '',
+    url: '/api/user/follow/singers',
     method: '',
     params
   })

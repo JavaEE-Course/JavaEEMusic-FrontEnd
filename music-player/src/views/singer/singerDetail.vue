@@ -7,6 +7,8 @@
       <div class="singer-info">
         <div class="singer-name">
           <div class="tag1">歌手</div>{{singerInfo.name}}
+          <div class="el-icon-star-on" v-show="followVisible" v-on:click="followAndUnfollow"></div>
+          <div class="el-icon-star-off" v-show="unfollowVisible" v-on:click="followAndUnfollow"></div>
         </div>
         <div class="singer-user-info">
           <div class="singer-create-time">
@@ -42,21 +44,46 @@
 </template>
 
 <script>
-import { getSingerDetailAPI } from '@/api/getsinger'
+import { getSingerDetailAPI, getFollowSingerAPI } from '../../api/getsinger'
 
 export default {
   name: 'SingerDetail',
   data () {
     return {
+      // 关注歌手
+      followVisible: false,
+      unfollowVisible: true,
       singerInfo: {},
       singerAlbums: []
     }
   },
   created () {
     const singerID = {'singer_id': this.$route.query.id}
+    const userId = {'userId': window.sessionStorage.getItem('userID')}
     getSingerDetailAPI(singerID).then(res => {
       this.singerInfo = res.data.data
       this.singerAlbums = res.data.data.albums
+    })
+    // 判断是否关注这个歌手
+    getFollowSingerAPI(userId).then(res => {
+      const singerList = res.data.data
+      let tag = false
+      const singerID = Number(this.$route.query.id)
+      for (let i = 0; i < singerList.length; i++) {
+        if (singerList[i].id === singerID) {
+          console.log('呵呵')
+          // 确实关注了这个歌手
+          tag = true
+          this.followVisible = true
+          this.unfollowVisible = false
+          break
+        }
+      }
+      if (!tag) {
+        console.log('哈哈')
+        this.followVisible = false
+        this.unfollowVisible = true
+      }
     })
   },
   methods: {
@@ -72,6 +99,25 @@ export default {
       this.$alert(introduction, name, {
         confirmButtonText: '确定'
       })
+    },
+    followAndUnfollow () {
+      if (this.followVisible === true) {
+        // 已关注，需要取关
+        this.followVisible = false
+        this.unfollowVisible = true
+        this.$message({
+          message: '已取消关注歌手',
+          type: 'error'
+        })
+      } else if (this.unfollowVisible === true) {
+        // 没有关注，需要关注
+        this.unfollowVisible = false
+        this.followVisible = true
+        this.$message({
+          message: '已成功关注歌手',
+          type: 'success'
+        })
+      }
     }
   }
 }
