@@ -33,13 +33,13 @@
       <div class="bottom-card">
         <img title="播放设置" src="../../assets/musicPlay/order.png" style="height: 40px;width: 40px"/>
         <img title="上一首" src="../../assets/musicPlay/front.png" style="height: 40px;width: 40px"/>
-        <div v-show="false" title="播放|暂停" class="el-icon-video-pause icon1"></div>
-        <div title="播放|暂停" class="el-icon-video-play icon1"></div>
+        <div v-show="pauseVisible" title="播放|暂停" class="el-icon-video-pause icon1" @click="playOrPause"></div>
+        <div v-show="playVisible" title="播放|暂停" class="el-icon-video-play icon1" @click="playOrPause"></div>
         <img title="下一首" src="../../assets/musicPlay/next.png" style="height: 40px;width: 40px"/>
         <div title="歌单列表" class="el-icon-more icon"></div>
       </div>
     </el-card>
-<!--    <audio :src="music" controls="controls"></audio>-->
+    <audio v-show="false" ref='audio' :src="music" controls="controls"></audio>
     <!--右侧滚动歌词-->
   </div>
 </template>
@@ -57,7 +57,10 @@ export default {
       albumName: '',
       commentNumber: 0,
       playProcess: 80,
-      musicTime: '3:21'
+      musicTime: '3:21',
+      // 组件可见性
+      pauseVisible: false,
+      playVisible: true
     }
   },
   created () {
@@ -76,7 +79,10 @@ export default {
     })
   },
   methods: {
-
+    playOrPause () {
+      // 需要暂停
+      // 需要播放
+    }
   }
 }
 </script>

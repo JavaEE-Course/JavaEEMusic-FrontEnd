@@ -76,6 +76,11 @@ export default new Router({
       path: '/playMusic',
       name: 'PlayMusic',
       component: () => import('@/views/song/playMusic')
+    },
+    {
+      path: '/test',
+      name: 'Test',
+      component: () => import('@/views/test/test')
     }
   ]
 })

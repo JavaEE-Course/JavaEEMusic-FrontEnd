@@ -7,13 +7,15 @@
       <div class="playlist-info">
         <div class="playlist-name">
           <div class="tag1">歌单</div>{{playlistInfo.playlist_name}}
+          <div class="el-icon-star-on" v-show="followVisible" v-on:click="followAndUnfollow"></div>
+          <div class="el-icon-star-off" v-show="unfollowVisible" v-on:click="followAndUnfollow"></div>
         </div>
         <div class="playlist-user-info">
           <div class="playlist-create-time">
             <span>共{{playlistInfo.song_list.length}}首</span>
           </div>
         </div>
-        <div class="playAllBtn iconfont icon-play" @click="playAll"> 播放全部</div>
+        <div class="playAllBtn iconfont icon-play"> 播放全部</div>
         <div class="playlist-desc">
           <span>简介：</span>
           <span :title="playlistInfo.playlist_introduction">{{playlistInfo.playlist_introduction}}</span>
@@ -60,12 +62,37 @@ export default {
   data () {
     return {
       playlistInfo: {},
-      songlist: []
+      songlist: [],
+      followVisible: false,
+      unfollowVisible: true
     }
   },
   methods: {
     toAlbum (id) {
       this.$router.push(`/index/albumdetail?id=${id}`)
+    },
+    followAndUnfollow () {
+      // TODO:收藏可取消收藏歌单
+      // const followList = {'id': window.sessionStorage.getItem('userID'), 'singerId': Number(this.$route.query.id)}
+      if (this.followVisible === true) {
+        console.log('呵呵')
+        // 已关注，需要取关
+        this.followVisible = false
+        this.unfollowVisible = true
+        this.$message({
+          message: '已取消收藏歌单',
+          type: 'error'
+        })
+      } else if (this.unfollowVisible === true) {
+        console.log('哈哈')
+        // 没有关注，需要关注
+        this.unfollowVisible = false
+        this.followVisible = true
+        this.$message({
+          message: '已成功收藏歌单',
+          type: 'success'
+        })
+      }
     }
   }
 }

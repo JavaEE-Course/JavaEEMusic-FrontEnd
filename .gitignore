@@ -1,4 +1,5 @@
 /.idea
+*.mp3
 package.json
 package-lock.json
 node_modules/webpack/types.d.ts
