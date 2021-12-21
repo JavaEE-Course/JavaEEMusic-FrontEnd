@@ -11,8 +11,8 @@
         <el-row>
           <el-col :span="6">
             <div class="singer-img-wrap">
-              <el-card style="height: 250px;" @click.native="avatorV=true">
-                <img :src="userinfo.avatorPath" alt="">
+              <el-card style="height: 250px;">
+                <el-image :src= "userinfo.avatarPath" style="width: 100%;height: 100%"/>
               </el-card>
             </div>
           </el-col>
@@ -39,36 +39,6 @@
       </el-card>
     </div>
     <div class="dialog">
-      <el-dialog title="修改头像" :visible.sync="avatorV">
-<!--        <el-upload-->
-<!--          class="avatar-uploader"-->
-<!--          action="https://jsonplaceholder.typicode.com/posts/"-->
-<!--          :on-success="handleAvatarSuccess"-->
-<!--          :show-file-list="false">-->
-<!--          <img v-if="imageUrl" :src="imageUrl" class="avatar">-->
-<!--          <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
-<!--        </el-upload>-->
-        <el-upload ref="upload"
-                   action="#"
-                   accept="image/png,image/gif,image/jpg,image/jpeg"
-                   list-type="picture-card"
-                   :auto-upload="false"
-                   :on-exceed="handleExceed"
-                   :before-upload="handleBeforeUpload"
-                   :on-preview="handlePictureCardPreview"
-                   :on-remove="handleRemove"
-                   :on-change="imgChange"
-                   :class="{hide:hideUpload}">
-          <i class="el-icon-plus"></i>
-          <img width="100%"
-               :src="ImageUrl"
-               alt="">
-        </el-upload>
-        <div slot="footer" class="dialog-footer" style="margin-top: -20px">
-          <el-button @click="avatorV = false">取 消</el-button>
-          <el-button type="primary" @click="avatorSubmit">确 定</el-button>
-        </div>
-      </el-dialog>
       <el-dialog title="修改个人信息" :visible.sync="dialogVisible">
         <el-form :model="meform">
           <el-form-item label="请输入新昵称" :label-width="formLabelWidth" style="margin-top: -20px">
@@ -83,10 +53,21 @@
           <el-form-item label="请输入性别" :label-width="formLabelWidth" style="margin-top: -20px">
             <el-input v-model="meform.gender" autocomplete="off"></el-input>
           </el-form-item>
+          <el-form-item label="请输入新头像" :label-width="formLabelWidth" style="margin-top: -20px">
+            <el-upload ref="upfile"
+                       style="display: inline"
+                       :auto-upload="false"
+                       :on-change="handleChange"
+                       :file-list="fileList"
+                       action="#">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="margin-top: -20px">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submit">确 定</el-button>
+          <el-button type="primary" @click="upload">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -105,20 +86,20 @@ export default {
       console.log('nikan')
       console.log(res.data)
       this.userinfo = res.data.data
+      console.log(this.userinfo.avatarPath)
     })
   },
   data () {
     return {
       imageUrl: '',
+      fileList: [],
       dialogVisible: false,
-      avatorV: false,
       userinfo: {},
       meform: {
         email: '',
         nickname: '',
         password: '',
-        gender: '',
-        avatorPath: ''
+        gender: ''
       },
       elCard: {
         background: '#dcc4cf'
@@ -138,26 +119,26 @@ export default {
         setTimeout(this.flashColor, 300)
       }
     },
-    submit () {
-      let parm = {
-        'id': window.sessionStorage.getItem('userID'),
-        'email': this.meform.email,
-        'password': this.meform.password,
-        'gender': this.meform.gender,
-        'nickname': this.meform.nickname,
-        'avatar': this.meform.avatar
-      }
-      edituserinfoAPI(parm).then(res => {
+    handleChange (file, fileList) {
+      this.fileList = fileList
+      this.imageUrl = URL.createObjectURL(file.raw)
+      console.log(fileList)
+    },
+    upload () {
+      var pass = require('js-sha256').sha256(this.meform.password)
+      let fd = new FormData()
+      fd.append('id', window.sessionStorage.getItem('userID'))
+      fd.append('email', this.meform.email)
+      fd.append('password', pass)
+      fd.append('gender', this.meform.gender)
+      fd.append('nickname', this.meform.nickname)
+      this.fileList.forEach(item => {
+        fd.append('avatar', item.raw)
+      })
+      edituserinfoAPI(fd).then(res => {
         console.log(res.data)
       })
-    },
-    handleAvatarSuccess (res, file) {
-      console.log('nihao')
-      this.imageUrl = URL.createObjectURL(file.raw)
-      console.log(this.imageUrl)
-    },
-    avatorSubmit () {
-      console.log(this.imageUrl)
+      this.dialogVisible = false
     }
   }
 }

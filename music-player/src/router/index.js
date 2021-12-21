@@ -78,6 +78,48 @@ export default new Router({
       component: () => import('@/views/song/playMusic')
     },
     {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('@/views/admin/adminfram'),
+      children: [
+        {
+          path: '/admin/first',
+          name: 'first',
+          component: () => import('@/views/admin/first')
+        },
+        {
+          path: '/admin/usermangement',
+          name: 'usermangement',
+          component: () => import('@/views/admin/usermangement')
+        },
+        {
+          path: '/admin/singermangement',
+          name: 'singermangement',
+          component: () => import('@/views/admin/singermangement')
+        },
+        {
+          path: '/admin/songmangement',
+          name: 'songmangement',
+          component: () => import('@/views/admin/songmangement')
+        },
+        {
+          path: '/admin/albummangement',
+          name: 'alnummangement',
+          component: () => import('@/views/admin/albummangement')
+        },
+        {
+          path: '/admin/albumsongs',
+          name: 'alnumsongst',
+          component: () => import('@/views/admin/albumsongs')
+        },
+        {
+          path: '/admin/playlistsongs',
+          name: 'playlistsongst',
+          component: () => import('@/views/admin/playlistsongs')
+        }
+      ]
+    },
+    {
       path: '/test',
       name: 'Test',
       component: () => import('@/views/test/test')

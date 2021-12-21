@@ -7,3 +7,11 @@ export function getallplaylistAPI (params) {
     params
   })
 }
+
+export function gettypeplaylistAPI (params) {
+  return request({
+    url: '/api/song/get/type/playlist',
+    method: 'get',
+    params
+  })
+}

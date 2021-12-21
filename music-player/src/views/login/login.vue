@@ -97,7 +97,11 @@ export default{
             message: '登录成功！'
           })
           window.sessionStorage.setItem('userID', res.data.data)
-          this.$router.push({ path: '/index' })
+          if (this.form.email === 'javaEE@tongji.edu.cn') {
+            this.$router.push({ path: '/admin/first' })
+          } else {
+            this.$router.push({ path: '/index' })
+          }
         } else if (res.data.code === 500) {
           this.$message({
             type: 'error',
