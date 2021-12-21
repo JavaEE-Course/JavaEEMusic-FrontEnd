@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <el-button v-if="testRoutePath()" id="musicButton" class="el-icon-headset button-bar" circle @click="changeAudioBarVisible"></el-button>
+    <el-button v-if="testRoutePath()" class="el-icon-headset button-bar" circle @click="changeAudioBarVisible"></el-button>
+    <el-button v-if="testRoutePath() || this.$route.path === '/playMusic' " v-show="!detailVisible" class="el-icon-arrow-up detail-bar" circle @click="changeSongDetailInfo"></el-button>
+    <el-button v-if="testRoutePath() || this.$route.path === '/playMusic' " v-show="detailVisible" class="el-icon-arrow-down detail-bar" circle @click="changeSongDetailInfo"></el-button>
     <AudioBar v-if="testRoutePath()" v-show="audioBarVisible" class="audio-bar"/>
     <router-view/>
   </div>
@@ -9,15 +11,28 @@
 <script>
 import Home from './views/home/index'
 import AudioBar from './components/AudioBar'
+// TODO:playMusic组件到其他组件之间的跳转
 export default {
   name: 'App',
   components: {AudioBar, Home},
   data () {
     return {
-      audioBarVisible: true
+      audioBarVisible: true,
+      detailVisible: false,
+      routePath: ''
     }
   },
   methods: {
+    changeSongDetailInfo () {
+      this.detailVisible = !this.detailVisible
+      this.audioBarVisible = !this.audioBarVisible
+      if (this.detailVisible) {
+        this.routePath = this.$route.path
+        this.$router.push('/playMusic')
+      } else {
+        this.$router.push(this.routePath)
+      }
+    },
     changeAudioBarVisible () {
       this.audioBarVisible = !this.audioBarVisible
     },
@@ -48,6 +63,12 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.detail-bar{
+  z-index: 9999;
+  position: fixed;
+  top:81%;
+  right: 20px;
 }
 .button-bar{
   z-index: 9001;

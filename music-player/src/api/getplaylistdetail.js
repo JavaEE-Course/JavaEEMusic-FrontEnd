@@ -7,3 +7,11 @@ export function getplaylistdetailAPI (params) {
     params
   })
 }
+
+export function getPlaylistInfoAPI (params) {
+  return request({
+    url: '/api/song/get/playlist/information',
+    method: 'get',
+    params
+  })
+}
