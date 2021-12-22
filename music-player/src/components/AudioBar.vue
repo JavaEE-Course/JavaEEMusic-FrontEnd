@@ -7,8 +7,8 @@
           <div class="process-card">
             <el-slider :show-tooltip="false" v-model="playProcess" @change="flushPlay"></el-slider>
             <div>
-              <div class="music-time">0:00</div>
-              <div class="music-time" style="margin-left: 93%">{{musicTime}}</div>
+              <div class="music-time">{{musicCurrentTime}}</div>
+              <div class="music-time" style="margin-left: 91%">{{musicTime}}</div>
             </div>
             <div>
               <img title="播放设置" :src="typePic" style="height: 30px;width: 30px" alt="" @click="changePlayType"/>
@@ -22,7 +22,7 @@
         </div>
         </div>
       </el-card>
-    <audio id="audio" preload="metadata" v-show="false" :src="musicURL" controls="controls" ref="audio"></audio>
+    <audio id="audio" preload="metadata" v-show="false" :src="musicURL" @ended="nextSongTest()" controls="controls" ref="audio"></audio>
     <el-dialog
       title="请选择歌曲"
       :visible.sync="chooseSongVisible"
@@ -49,6 +49,7 @@ export default {
       // 基本信息
       musicPhoto: '',
       playProcess: 0,
+      musicCurrentTime: '0:00',
       musicLastTime: '--:--',
       musicTime: '--:--',
       pauseVisible: false,
@@ -95,8 +96,18 @@ export default {
     })
   },
   methods: {
-    // TODO：一首歌结束之后自动播放下一首歌
-    // TODO：更新当前的时间
+    sleep (time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    },
+    nextSongTest () {
+      this.nextSong()
+      window.clearInterval(this.clock)
+      this.$refs.audio.pause()
+      this.sleep(1000).then(() => {
+        this.$refs.audio.play()
+        this.countUp()
+      })
+    },
     // 定时
     countUp () {
       window.clearInterval(this.clock)
@@ -123,11 +134,19 @@ export default {
     },
     // 重新设定时间
     resetTime () {
+      // 计算总时间
       this.totalTime = this.$refs.audio.duration
       if (isNaN(this.totalTime)) return
       let minutes = Math.floor(this.totalTime / 60)
       let seconds = Math.floor(this.totalTime - minutes * 60)
       this.musicTime = minutes + ':' + seconds
+      // 计算当前时间
+      const currentTime = this.$refs.audio.currentTime
+      if (isNaN(currentTime)) return
+      minutes = Math.floor(currentTime / 60)
+      seconds = Math.floor(currentTime - minutes * 60)
+      if (minutes < 10) this.musicCurrentTime = '0' + minutes + ':' + seconds
+      else this.musicCurrentTime = minutes + ':' + seconds
     },
     rePlay () {
       // 需要重新播放
