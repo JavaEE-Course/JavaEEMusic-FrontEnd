@@ -71,11 +71,13 @@ export default {
     getalluserAPI().then(res => {
       this.userCount = res.data.data.length
       var list = res.data.data
+      console.log(list)
       for (var i = 0; i < this.userCount; i++) {
-        if (list[i].sex === '男') {
-          this.userSex.rows[1].总数++
-        } else {
+        if (list[i].gender === '男') {
           this.userSex.rows[0].总数++
+        }
+        if (list[i].gender === '女') {
+          this.userSex.rows[1].总数++
         }
       }
     })

@@ -226,14 +226,14 @@ export default {
         sex = '组合'
       }
       console.log(sex)
-      let params = new FormData()
-      params.append('name', this.registerForm.name)
-      params.append('sex', sex)
-      params.append('description', this.registerForm.introduction)
+      let fd = new FormData()
+      fd.append('name', this.registerForm.name)
+      fd.append('sex', sex)
+      fd.append('description', this.registerForm.introduction)
       this.fileList.forEach(item => {
-        params.append('avatar', item.raw)
+        fd.append('avatar', item.raw)
       })
-      singeraddAPI(params).then(res => {
+      singeraddAPI(fd).then(res => {
         console.log(res.data)
       })
       this.centerDialogVisible = false
@@ -292,7 +292,7 @@ export default {
     // 专辑管理
     albumEdit (id) {
       var parm = {
-        singer_id: id
+        singerId: id
       }
       getSingerDetailAPI(parm).then(res => {
         this.albumList = res.data.data.albums

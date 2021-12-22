@@ -7,7 +7,7 @@
         <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加用户</el-button>
       </div>
       <el-table ref="multipleTable" size="mini" border style="width: 100%" height="520px"
-                :data="data.filter(data => !select_word || data.nickName.toLowerCase().includes(select_word.toLowerCase()))"
+                :data="data.filter(data => !select_word || data.nickname.toLowerCase().includes(select_word.toLowerCase()))"
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="40"></el-table-column>
         <el-table-column label="用户图片" width="110" align="center">
@@ -189,15 +189,16 @@ export default {
         sex = '男'
       }
       var password = require('js-sha256').sha256(this.registerForm.password)
-      let params = new FormData()
-      params.append('nickname', this.registerForm.name)
-      params.append('email', this.registerForm.singer)
-      params.append('password', password)
-      params.append('gender', sex)
+      let fd = new FormData()
+      fd.append('nickname', this.registerForm.name)
+      fd.append('email', this.registerForm.email)
+      fd.append('password', password)
+      fd.append('gender', sex)
       this.fileList.forEach(item => {
-        params.append('avatar', item.raw)
+        fd.append('avatar', item.raw)
       })
-      useraddAPI(params).then(res => {
+      console.log(fd)
+      useraddAPI(fd).then(res => {
         console.log(res.data)
       })
       this.centerDialogVisible = false

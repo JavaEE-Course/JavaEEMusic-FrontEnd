@@ -6,7 +6,7 @@
         <el-input v-model="select_word" class="handle-input mr10" size="mini" placeholder="筛选关键词"></el-input>
       </div>
       <el-table ref="multipleTable" size="mini" border style="width: 100%" height="520px"
-                :data="data.filter(data => !select_word || data.name.toLowerCase().includes(select_word.toLowerCase()))"
+                :data="data.filter(data => !select_word || data.playlist_name.toLowerCase().includes(select_word.toLowerCase()))"
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="40"></el-table-column>
         <el-table-column label="歌单图片" width="110" align="center">
@@ -29,7 +29,7 @@
         </el-table-column>
         <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+<!--            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>-->
             <el-button size="mini" type="danger" @click="handleDelete(scope.row.playlist_id)">删除</el-button>
           </template>
         </el-table-column>

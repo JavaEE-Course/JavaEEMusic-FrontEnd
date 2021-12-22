@@ -11,6 +11,6 @@ export function useraddAPI (params) {
   return request({
     url: '/api/user/add',
     method: 'post',
-    params
+    data: params
   })
 }

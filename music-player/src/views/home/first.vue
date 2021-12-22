@@ -83,18 +83,18 @@ export default {
       let parm = {
         'user_id': window.sessionStorage.getItem('userID')
       }
-      let parm1 = {
+      let parma = {
         'id': window.sessionStorage.getItem('userID')
       }
       getmyplaylistAPI(parm).then(res => {
         console.log('my')
         console.log(res.data)
       })
-      getotherplaylistAPI(parm1).then(res => {
+      getotherplaylistAPI(parma).then(res => {
         console.log('getother')
         console.log(res.data)
       })
-      getdailyplaylistAPI(parm1).then(res => {
+      getdailyplaylistAPI(parma).then(res => {
         console.log('daily')
         console.log(res.data)
       })

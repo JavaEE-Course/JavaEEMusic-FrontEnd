@@ -21,7 +21,7 @@
             <div class="songs-wrap">
               <div class="list">
                 <ul style="margin-left: -35px">
-                  <li v-for="(item,index) in allPageList[allPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                  <li v-for="(item,index) in allPageList[totalPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
                     <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
                     <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
                     <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
@@ -31,13 +31,111 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="欧美" name="second" ></el-tab-pane>
-        <el-tab-pane label="华语" name="third" ></el-tab-pane>
-        <el-tab-pane label="流行" name="fourth" ></el-tab-pane>
-        <el-tab-pane label="说唱" name="fifth" ></el-tab-pane>
-        <el-tab-pane label="摇滚" name="sixth" ></el-tab-pane>
-        <el-tab-pane label="民谣" name="seventh" ></el-tab-pane>
-        <el-tab-pane label="影视" name="eighth" ></el-tab-pane>
+        <el-tab-pane label="欧美" name="second" >
+          <div class="discover" v-loading="loading" style="align: center;margin-top: -30px">
+            <div class="songs-wrap">
+              <div class="list">
+                <ul style="margin-left: -35px">
+                  <li v-for="(item,index) in oumeiPageList[oumeiPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                    <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
+                    <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
+                    <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="华语" name="third" >
+          <div class="discover" v-loading="loading" style="align: center;margin-top: -30px">
+            <div class="songs-wrap">
+              <div class="list">
+                <ul style="margin-left: -35px">
+                  <li v-for="(item,index) in huayuPageList[huayuPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                    <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
+                    <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
+                    <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="流行" name="fourth" >
+          <div class="discover" v-loading="loading" style="align: center;margin-top: -30px">
+            <div class="songs-wrap">
+              <div class="list">
+                <ul style="margin-left: -35px">
+                  <li v-for="(item,index) in liuxingPageList[liuxingPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                    <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
+                    <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
+                    <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="说唱" name="fifth" >
+          <div class="discover" v-loading="loading" style="align: center;margin-top: -30px">
+            <div class="songs-wrap">
+              <div class="list">
+                <ul style="margin-left: -35px">
+                  <li v-for="(item,index) in shuochangPageList[shuochangPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                    <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
+                    <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
+                    <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="摇滚" name="sixth" >
+          <div class="discover" v-loading="loading" style="align: center;margin-top: -30px">
+            <div class="songs-wrap">
+              <div class="list">
+                <ul style="margin-left: -35px">
+                  <li v-for="(item,index) in yaogunPageList[yaogunPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                    <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
+                    <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
+                    <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="民谣" name="seventh" >
+          <div class="discover" v-loading="loading" style="align: center;margin-top: -30px">
+            <div class="songs-wrap">
+              <div class="list">
+                <ul style="margin-left: -35px">
+                  <li v-for="(item,index) in minyaoPageList[minyaoPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                    <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
+                    <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
+                    <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="影视" name="eighth" >
+          <div class="discover" v-loading="loading" style="align: center;margin-top: -30px">
+            <div class="songs-wrap">
+              <div class="list">
+                <ul style="margin-left: -35px">
+                  <li v-for="(item,index) in yingshiPageList[yingshiPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                    <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
+                    <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
+                    <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </el-tab-pane>
 
       </el-tabs>
       <el-pagination
@@ -53,11 +151,11 @@
 </template>
 
 <script>
-import { getallplaylistAPI } from '@/api/getallplaylist'
+// eslint-disable-next-line standard/object-curly-even-spacing
+import { getallplaylistAPI, gettypeplaylistAPI} from '@/api/getallplaylist'
 export default {
   created () {
     getallplaylistAPI().then(res => {
-      console.log(res.data.data)
       this.playList = res.data.data
       this.highQuality = this.playList[0]
       this.loading = false
@@ -71,6 +169,113 @@ export default {
       }
       this.allPageList.push(pageData)
     })
+    // 获取其它类型的歌单的数量
+    var parm7 = {
+      'type': '欧美'
+    }
+    gettypeplaylistAPI(parm7).then(res => {
+      this.oumeiList = res.data.data
+      this.loading = false
+      var pageData = []
+      for (let i = 0; i < this.oumeiList.length; i++) {
+        pageData.push(this.oumeiList[i])
+        if (pageData.length % 5 === 0) {
+          this.oumeiPageList.push(pageData)
+          pageData = []
+        }
+      }
+      this.oumeiPageList.push(pageData)
+    })
+    var parm1 = {
+      'type': '华语'
+    }
+    gettypeplaylistAPI(parm1).then(res => {
+      this.huayuList = res.data.data
+      var pageData = []
+      for (let i = 0; i < this.huayuList.length; i++) {
+        pageData.push(this.huayuList[i])
+        if (pageData.length % 5 === 0) {
+          this.huayuPageList.push(pageData)
+          pageData = []
+        }
+      }
+      this.huayuPageList.push(pageData)
+    })
+    var parm2 = {
+      'type': '流行'
+    }
+    gettypeplaylistAPI(parm2).then(res => {
+      this.liuxingList = res.data.data
+      var pageData = []
+      for (let i = 0; i < this.liuxingList.length; i++) {
+        pageData.push(this.liuxingList[i])
+        if (pageData.length % 5 === 0) {
+          this.liuxingPageList.push(pageData)
+          pageData = []
+        }
+      }
+      this.liuxingPageList.push(pageData)
+    })
+    var parm3 = {
+      'type': '说唱'
+    }
+    gettypeplaylistAPI(parm3).then(res => {
+      this.shuochangList = res.data.data
+      var pageData = []
+      for (let i = 0; i < this.shuochangList.length; i++) {
+        pageData.push(this.shuochangList[i])
+        if (pageData.length % 5 === 0) {
+          this.shuochangPageList.push(pageData)
+          pageData = []
+        }
+      }
+      this.shuochangPageList.push(pageData)
+    })
+    var parm4 = {
+      'type': '摇滚'
+    }
+    gettypeplaylistAPI(parm4).then(res => {
+      this.yaogunList = res.data.data
+      var pageData = []
+      for (let i = 0; i < this.yaogunList.length; i++) {
+        pageData.push(this.yaogunList[i])
+        if (pageData.length % 5 === 0) {
+          this.yaogunPageList.push(pageData)
+          pageData = []
+        }
+      }
+      this.yaogunPageList.push(pageData)
+    })
+    var parm5 = {
+      'type': '民谣'
+    }
+    gettypeplaylistAPI(parm5).then(res => {
+      this.minyaoList = res.data.data
+      var pageData = []
+      for (let i = 0; i < this.minyaoList.length; i++) {
+        pageData.push(this.minyaoList[i])
+        if (pageData.length % 5 === 0) {
+          this.minyaoPageList.push(pageData)
+          pageData = []
+        }
+      }
+      this.minyaoPageList.push(pageData)
+    })
+    var parm6 = {
+      'type': '影视'
+    }
+    gettypeplaylistAPI(parm6).then(res => {
+      this.yingshiList = res.data.data
+      var pageData = []
+      for (let i = 0; i < this.yingshiList.length; i++) {
+        pageData.push(this.yingshiList[i])
+        if (pageData.length % 5 === 0) {
+          this.yingshiPageList.push(pageData)
+          pageData = []
+        }
+      }
+      this.yingshiPageList.push(pageData)
+    })
   },
   data () {
     return {
@@ -82,8 +287,29 @@ export default {
       currentPage: 0,
       // 所有歌单
       allPageList: [],
-      allPageNumber: 0
+      totalPageNumber: 0,
       // 其它歌单
+      oumeiList: [],
+      oumeiPageList: [],
+      oumeiPageNumber: 0,
+      huayuList: [],
+      huayuPageList: [],
+      huayuPageNumber: 0,
+      liuxingList: [],
+      liuxingPageList: [],
+      liuxingPageNumber: 0,
+      shuochangList: [],
+      shuochangPageList: [],
+      shuochangPageNumber: 0,
+      yaogunList: [],
+      yaogunPageList: [],
+      yaogunPageNumber: 0,
+      minyaoList: [],
+      minyaoPageList: [],
+      minyaoPageNumber: 0,
+      yingshiList: [],
+      yingshiPageList: [],
+      yingshiPageNumber: 0
     }
   },
   methods: {
@@ -93,12 +319,76 @@ export default {
     handleTabClick () {
       if (this.activeName !== 'first') {
         this.allPageNumber = 0
-        this.currentPage = 1
       }
+      if (this.activeName !== 'second') {
+        this.oumeiPageNumber = 0
+      }
+      if (this.activeName !== 'third') {
+        this.huayuPageNumber = 0
+      }
+      if (this.activeName !== 'fourth') {
+        this.liuxingPageNumber = 0
+      }
+      if (this.activeName !== 'fifth') {
+        this.shuochangPageNumber = 0
+      }
+      if (this.activeName !== 'sixth') {
+        this.yaogunPageNumber = 0
+      }
+      if (this.activeName !== 'seventh') {
+        this.minyaoPageNumber = 0
+      }
+      if (this.activeName !== 'eighth') {
+        this.yingshiPageNumber = 0
+      }
+      this.totalPageNumber = this.getTotalPage()
+      this.currentPage = 1
     },
     handlePageChange: function (val) {
       if (this.activeName === 'first') {
         this.allPageNumber = val - 1
+      }
+      if (this.activeName === 'second') {
+        this.oumeiPageNumber = val - 1
+      }
+      if (this.activeName === 'third') {
+        this.huayuPageNumber = val - 1
+      }
+      if (this.activeName === 'fourth') {
+        this.liuxingPageNumber = val - 1
+      }
+      if (this.activeName === 'fifth') {
+        this.shuochangPageNumber = val - 1
+      }
+      if (this.activeName === 'sixth') {
+        this.yaogunPageNumber = val - 1
+      }
+      if (this.activeName === 'seventh') {
+        this.minyaoPageNumber = val - 1
+      }
+      if (this.activeName === 'eigth') {
+        this.yingshiPageNumber = val - 1
+      }
+    },
+    getTotalPage () {
+      if (this.activeName === 'first') {
+        return this.playList.length
+      } else if (this.activeName === 'second') {
+        return this.oumeiList.length
+      } else if (this.activeName === 'third') {
+        return this.huayuList.length
+      } else if (this.activeName === 'fourth') {
+        return this.liuxingList.length
+      } else if (this.activeName === 'fifth') {
+        return this.shuochangList.length
+      } else if (this.activeName === 'sixth') {
+        return this.yaogunList.length
+      } else if (this.activeName === 'seventh') {
+        return this.minyaoList.length
+      } else if (this.activeName === 'eighth') {
+        return this.yingshiList.length
+      } else {
+        return 0
       }
     }
   }
