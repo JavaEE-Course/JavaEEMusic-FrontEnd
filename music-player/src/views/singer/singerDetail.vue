@@ -58,14 +58,13 @@ export default {
     }
   },
   created () {
-    const singerID = {'singer_id': this.$route.query.id}
+    const singerID = {'singerId': this.$route.query.id}
     const userId = {'userId': window.sessionStorage.getItem('userID')}
     getSingerDetailAPI(singerID).then(res => {
       this.singerInfo = res.data.data
       this.singerAlbums = res.data.data.albums
     })
     // 判断是否关注这个歌手
-    console.log(userId)
     getFollowSingerAPI(userId).then(res => {
       const singerList = res.data.data
       console.log(userId)

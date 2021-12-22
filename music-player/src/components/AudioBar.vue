@@ -69,7 +69,9 @@ export default {
       typePic: require('../assets/musicPlay/order.png'),
       typeNumber: 0,
       // 定时播放相关
-      clock: ''
+      clock: '',
+      timer: '',
+      lyricTimer: ''
     }
   },
   created () {
@@ -95,7 +97,19 @@ export default {
       }
     })
   },
+  mounted () {
+    this.timer = setInterval(this.store, 700)
+    this.lyricTimer = setInterval(this.updateLyric, 200)
+  },
   methods: {
+    store () {
+      // 创建一个定时器
+      this.$store.commit('setCurrentSongId', this.musicList[this.currentSongNumber].song_id)
+    },
+    // 更新歌词
+    updateLyric () {
+      this.$store.commit('setCurrentTime', this.$refs.audio.currentTime)
+    },
     sleep (time) {
       return new Promise((resolve) => setTimeout(resolve, time))
     },

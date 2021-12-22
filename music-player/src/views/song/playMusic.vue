@@ -4,7 +4,9 @@
     <div class="Img_Box">
       <img :src="cover" width="100%" height="100%" />
     </div>
-    <!--左侧歌曲信息-->
+    <!--歌曲信息-->
+    <div style="display: flex;flex-direction: row">
+      <!--左侧歌曲信息-->
     <el-card class="card">
       <div>
         <img :src="cover" class="song-card" alt="res"/>
@@ -17,35 +19,56 @@
         </div>
       </div>
       <div class="mid-card">
-        <div title="取消收藏" v-show="false" class="el-icon-star-on icon"></div>
-        <div title="收藏" class="el-icon-star-off icon"></div>
-        <div title="查看评论" class="el-icon-chat-dot-round icon"></div>
-        <div title="查看评分" class="el-icon-bell icon"></div>
-        <div title="详细信息" class="el-icon-warning-outline icon"></div>
-      </div>
-      <div class="process-card">
-        <el-slider v-model="playProcess"></el-slider>
+        <div v-show="!favoriteVisible">
+          <div title="取消收藏"  class="el-icon-star-on icon" @click="favoriteOrNot"></div>
+          <div style="color:snow;">取消收藏</div>
+        </div>
+        <div v-show="favoriteVisible">
+          <div title="收藏" class="el-icon-star-off icon" @click="favoriteOrNot"></div>
+          <div style="color:snow;">收藏</div>
+        </div>
         <div>
-          <div class="music-time">0:00</div>
-          <div class="music-time" style="margin-left: 81%">{{musicTime}}</div>
+          <div title="查看评论" class="el-icon-chat-dot-round icon" @click="checkComment"></div>
+          <div style="margin-top: 5px;color: snow">{{commentNumber}}</div>
+        </div>
+        <div>
+          <div title="查看评分" class="el-icon-bell icon" @click="checkScore"></div>
+          <div style="color:snow;">{{songScore}}</div>
+        </div>
+        <div v-show="!followVisible">
+          <div title="取消关注"  class="el-icon-star-on icon" @click="followAndUnfollow"></div>
+          <div style="color:snow;">取消关注</div>
+        </div>
+        <div v-show="followVisible">
+          <div title="关注歌手" class="el-icon-star-off icon" @click="followAndUnfollow"></div>
+          <div style="color:snow;">关注歌手</div>
         </div>
       </div>
-      <div class="bottom-card">
-        <img title="播放设置" src="../../assets/musicPlay/order.png" style="height: 40px;width: 40px"/>
-        <img title="上一首" src="../../assets/musicPlay/front.png" style="height: 40px;width: 40px"/>
-        <div v-show="pauseVisible" title="播放|暂停" class="el-icon-video-pause icon1" @click="playOrPause"></div>
-        <div v-show="playVisible" title="播放|暂停" class="el-icon-video-play icon1" @click="playOrPause"></div>
-        <img title="下一首" src="../../assets/musicPlay/next.png" style="height: 40px;width: 40px"/>
-        <div title="歌单列表" class="el-icon-more icon"></div>
-      </div>
     </el-card>
-    <audio v-show="false" ref='audio' :src="music" controls="controls"></audio>
-    <!--右侧滚动歌词-->
+    <!--右侧歌词信息-->
+    <el-card class="lyrics-card" style="color:snow;">
+        <ul style="margin-top: 5px;height: 100px;list-style-type: none">
+          <li style="text-align: center" v-for="item in topLyricList" :key="item">
+            {{ item }}
+          </li>
+        </ul>
+      <ul style="margin-top: 50px;list-style-type: none">
+        <li  class="current-lyric">{{currentLyrics}}</li>
+      </ul>
+      <ul style="margin-top:20px;height: 100px;list-style-type: none">
+        <li style="text-align: center" v-for="item in bottomLyricList" :key="item">
+          {{ item }}
+        </li>
+      </ul>
+    </el-card>
+    </div>
   </div>
 </template>
 
 <script>
 import { getSongDetailAPI } from '../../api/getsonglist'
+import {followAndUnfollowAPI, getFollowSingerAPI} from '../../api/getsinger'
+
 export default {
   name: 'PlayMusic',
   data () {
@@ -54,34 +77,195 @@ export default {
       cover: '',
       songName: '',
       singerName: '',
+      singerId: '',
       albumName: '',
+      songScore: '暂无评分',
       commentNumber: 0,
       playProcess: 80,
       musicTime: '3:21',
+      songId: 0,
       // 组件可见性
-      pauseVisible: false,
-      playVisible: true
+      favoriteVisible: true,
+      followVisible: true,
+      playVisible: true,
+      // 定时器
+      clock: '',
+      timer: '',
+      lyricTimer: '',
+      // 歌词相关
+      lyrics: '',
+      lyricsTimeList: [],
+      currentLyrics: '',
+      topLyricList: ['', '', '', '', ''],
+      bottomLyricList: ['', '', '', '', '']
     }
   },
   created () {
     if (window.sessionStorage.getItem('userID') === null) {
       this.$router.push({ path: '/login' })
     }
-    const songId = {'song_id': 2}
+    const userId = {'userId': window.sessionStorage.getItem('userID')}
+    const songId = {'song_id': this.$store.getters.getCurrentSongId}
+    this.songId = this.$store.getters.getCurrentSongId
+    // 接收歌曲详细信息
     getSongDetailAPI(songId).then(res => {
-      console.log(res)
       this.music = res.data.data.song_path
       this.cover = res.data.data.cover_path
       this.songName = res.data.data.song_name
       this.singerName = res.data.data.singer_name
+      this.singerId = res.data.data.singer_id
       this.albumName = res.data.data.album_name
       this.commentNumber = res.data.data.comment_number
+      this.songScore = isNaN(res.data.data.song_Score) ? '暂无' : res.data.data.song_Score
+      this.lyrics = res.data.data.lyrics_path
+      this.lyricsTimeList = []
+      this.handleLyrics()
+    })
+    // 判断是否关注这个歌手
+    getFollowSingerAPI(userId).then(res => {
+      const singerList = res.data.data
+      let tag = false
+      const singerID = Number(this.$route.query.id)
+      for (let i = 0; i < singerList.length; i++) {
+        if (singerList[i].id === singerID) {
+          // 确实关注了这个歌手
+          tag = true
+          this.followVisible = true
+          this.unfollowVisible = false
+          break
+        }
+      }
+      if (!tag) {
+        this.followVisible = false
+        this.unfollowVisible = true
+      }
     })
   },
+  mounted () {
+    this.timer = setInterval(this.changeSong, 600)
+    this.lyricsTimer = setInterval(this.changeLyric, 200)
+  },
   methods: {
-    playOrPause () {
-      // 需要暂停
-      // 需要播放
+    // 自动切换歌词
+    changeLyric () {
+      const time = this.$store.getters.getCurrentTime
+      for (let i = 0; i < this.lyricsTimeList.length; i++) {
+        if (Math.abs(this.lyricsTimeList[i] - time) <= 0.1) {
+          this.topLyricList = []
+          this.bottomLyricList = []
+          this.currentLyrics = this.lyrics[i]
+          // 显示上边的歌词
+          let start, end
+          if (i - 5 < 0) start = 0
+          else start = i - 5
+          // 显示下边的歌词
+          if (i + 5 >= this.lyricsTimeList.length) end = this.lyricsTimeList.length - 1
+          else end = i + 5
+          for (let k = start; k < i; k++) this.topLyricList.push(this.lyrics[k])
+          for (let k = i + 1; k <= end; k++) this.bottomLyricList.push(this.lyrics[k])
+          break
+        }
+      }
+    },
+    // 删除空字符串
+    deleteEmptyString (rayLyrics) {
+      let lyrics = []
+      for (let i = 0; i < rayLyrics.length; i++) {
+        if (rayLyrics[i].length !== 0) {
+          lyrics.push(rayLyrics[i])
+        }
+      }
+      return lyrics
+    },
+    // 分离出时间, 并计算出时间
+    spiltTime (lyricList) {
+      let res = []
+      // 分离时间
+      for (let i = 0; i < lyricList.length; i++) {
+        let temp = lyricList[i].split(']')
+        if (temp[1] !== '\n') {
+          this.lyricsTimeList.push(temp[0])
+          res.push(temp[1].split('\n')[0].replace(/^\s*|\s*$/g, ''))
+        }
+      }
+      // 计算时间
+      let timeList = []
+      for (let i = 0; i < this.lyricsTimeList.length; i++) {
+        let time = 0
+        // 筛选分钟
+        const minutes = Number(this.lyricsTimeList[i].split(':')[0])
+        // 筛选秒
+        const seconds = Number(this.lyricsTimeList[i].split(':')[1])
+        time = minutes * 60 + seconds
+        timeList.push(time)
+      }
+      this.lyricsTimeList = timeList
+      return res
+    },
+    // 处理歌词
+    handleLyrics () {
+      let lyrics = this.lyrics.split('[')
+      // 删除空字符串
+      lyrics = this.deleteEmptyString(lyrics)
+      // 分隔出时间
+      lyrics = this.spiltTime(lyrics)
+      this.lyrics = lyrics
+    },
+    // 自动判断切歌
+    changeSong () {
+      if (this.$store.getters.getCurrentSongId !== this.songId) {
+        const songId = {'song_id': this.$store.getters.getCurrentSongId}
+        this.songId = this.$store.getters.getCurrentSongId
+        this.$store.commit('setCurrentSongId', songId)
+        getSongDetailAPI(songId).then(res => {
+          this.music = res.data.data.song_path
+          this.cover = res.data.data.cover_path
+          this.songName = res.data.data.song_name
+          this.singerName = res.data.data.singer_name
+          this.singerId = res.data.data.singer_id
+          this.albumName = res.data.data.album_name
+          this.commentNumber = res.data.data.comment_number
+          this.songScore = isNaN(res.data.data.song_Score) ? '暂无评分' : res.data.data.song_Score
+          this.lyrics = res.data.data.lyrics_path
+          this.lyricsTimeList = []
+          this.handleLyrics()
+        })
+      }
+    },
+    // 关注歌手
+    followAndUnfollow () {
+      const followList = {'id': window.sessionStorage.getItem('userID'), 'singerId': this.singerId}
+      // 没有关注，需要关注
+      if (this.followVisible) {
+        this.followVisible = false
+        this.$message({
+          message: '已成功关注歌手',
+          type: 'success'
+        })
+        followAndUnfollowAPI(followList).then(res => {
+        })
+      } else {
+        // 已经关注，需要取关
+        this.followVisible = true
+        this.$message({
+          message: '已取消关注歌手',
+          type: 'error'
+        })
+        followAndUnfollowAPI(followList).then(res => {
+        })
+      }
+    },
+    // 查看评分
+    checkScore () {
+
+    },
+    // 查看评论
+    checkComment () {
+
+    },
+    // 收藏或取消收藏
+    favoriteOrNot () {
+
     }
   }
 }
@@ -116,6 +300,13 @@ export default {
   align-items: center;
   color: wheat;
 }
+.current-lyric {
+  text-align: center;
+  font-size: 25px;
+  font-weight: 550;
+  color: wheat;
+  text-shadow: 0.1em 0.1em 0.2em black;
+}
 .song-name-info .tag1 {
   color: #5f91d6;
   border: 1px solid #2e0f6d;
@@ -134,10 +325,18 @@ export default {
   color: #8ef1ef;
   margin-top: 25px;
 }
+.lyrics-card{
+  background: transparent;
+  margin-left: 250px;
+  height: 370px;
+  max-height: 370px;
+  width: 400px;
+  max-width: 400px;
+}
 .card{
   background: transparent;
   margin-left: 150px;
-  height: 500px;
+  height: 370px;
   width: 400px;
 }
 .mid-card{
@@ -149,27 +348,5 @@ export default {
 .mid-card .icon{
   font-size: 30px;
   color: wheat;
-}
-.process-card{
-  margin-top: 30px;
-}
-.music-time{
-  float: left;
-  color: wheat;
-}
-.bottom-card{
-  display: flex;
-  justify-content: space-around;
-  margin-top: 40px;
-  left: 0;right: 0;
-}
-.bottom-card .icon{
-  font-size: 40px;
-  color: whitesmoke;
-}
-.bottom-card .icon1{
-  margin-top: -10px;
-  font-size: 60px;
-  color: whitesmoke;
 }
 </style>
