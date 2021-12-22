@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     sleep (time) {
-      return new Promise((resolve) => setTimeout(resolve, time));
+      return new Promise((resolve) => setTimeout(resolve, time))
     },
     nextSongTest () {
       this.nextSong()

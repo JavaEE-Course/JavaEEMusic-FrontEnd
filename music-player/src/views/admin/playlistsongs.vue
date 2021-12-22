@@ -3,11 +3,11 @@
     <div class="container">
       <div class="handle-box">
         <el-button class="handle-del mr10" type="primary" size="mini" @click="delAll">批量删除</el-button>
-        <el-input v-model="select_word" class="handle-input mr10" size="mini" placeholder="筛选关键词"></el-input>
+        <el-input v-model="select_word" class="handle-input mr10" size="mini" placeholder="筛选关键词(歌曲名称)"></el-input>
         <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加歌曲</el-button>
       </div>
       <el-table ref="multipleTable" size="mini" border style="width: 100%" height="520px"
-                :data="data.filter(data => !select_word || data.singer_name.toLowerCase().includes(select_word.toLowerCase()))"
+                :data="data.filter(data => !select_word || data.song_name.toLowerCase().includes(select_word.toLowerCase()))"
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="40"></el-table-column>
         <el-table-column label="歌单图片" width="110" align="center">
@@ -125,7 +125,7 @@
 
 <script>
 import { getSongDetailAPI } from '@/api/getsonglist'
-import { getplaylistdetailAPI } from '@/api/getplaylistdetail'
+import { getplaylistdetailAPI, playlistsongremoveAPI } from '@/api/getplaylistdetail'
 export default {
   created () {
     // 获取歌单歌曲
@@ -257,6 +257,14 @@ export default {
     // 确定删除
     deleteRow () {
       this.delVisible = false
+      let query = this.$route.query
+      let params = {
+        'playlist_id': query.info,
+        'song_id': this.idx
+      }
+      playlistsongremoveAPI(params).then(res => {
+        console.log(res.data)
+      })
     },
     // 专辑管理
     albumEdit (row) {

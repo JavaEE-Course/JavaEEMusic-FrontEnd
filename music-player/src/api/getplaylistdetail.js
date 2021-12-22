@@ -15,3 +15,10 @@ export function getPlaylistInfoAPI (params) {
     params
   })
 }
+export function playlistsongremoveAPI (params) {
+  return request({
+    url: '/api/song/remove/playlist/song',
+    method: 'post',
+    params
+  })
+}
