@@ -31,7 +31,12 @@
                       v-el-table-infinite-scroll="loadMore"
                       infinite-scroll-delay=500
                       infinite-scroll-disabled="noMore">
-              <el-table-column prop="song_name" label="音乐标题"></el-table-column>
+              <el-table-column prop="song_name" label="音乐标题">
+                <template slot-scope="scope">
+                  <span style="cursor:pointer;color:#2980b9;">{{scope.row.song_name}}</span>
+                  <span class="plus" @click="addToplay(scope.row.song_id)">+</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="singer_name" label="歌手"></el-table-column>
               <el-table-column prop="album_name" label="专辑" >
                 <template slot-scope="scope">
@@ -70,6 +75,10 @@ export default {
   methods: {
     toAlbum (id) {
       this.$router.push(`/index/albumdetail?id=${id}`)
+    },
+    addToplay (songid) {
+      // songid即为歌曲的标识
+      console.log(songid)
     },
     followAndUnfollow () {
       // TODO:收藏可取消收藏歌单
@@ -114,6 +123,16 @@ export default {
     bottom: 0;
     width: 100%;
     height: 0;
+  }
+  .plus {
+    padding: 10px;
+    border-radius: 50%;
+    margin-left: 10px;
+    top: 0;
+    font-size: 25px;
+    position: absolute;
+    font-weight: bold;
+    cursor: pointer;
   }
 .playlist {
 max-width: 1300px;
