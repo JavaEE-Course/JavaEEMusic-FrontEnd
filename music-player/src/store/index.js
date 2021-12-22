@@ -16,6 +16,7 @@ const store = new Vuex.Store({
     musicURL: '',
     musicName: '',
     totalTime: 0,
+    currentSongId: 0,
     // 歌单相关
     currentSongNumber: 0,
     musicList: [],
@@ -28,7 +29,9 @@ const store = new Vuex.Store({
     typePic: require('../assets/musicPlay/order.png'),
     typeNumber: 0,
     // 定时播放相关
-    clock: ''
+    clock: '',
+    // 目前的播放时间
+    currentTime: 0
   },
   mutations: {
     setMusicPhoto (state, value) {
@@ -36,6 +39,9 @@ const store = new Vuex.Store({
     },
     setPlayProcess (state, value) {
       state.playProcess = value
+    },
+    setCurrentTime (state, value) {
+      state.currentTime = value
     },
     setMusicCurrentTime (state, value) {
       state.musicCurrentTime = value
@@ -60,6 +66,9 @@ const store = new Vuex.Store({
     },
     setTotalTime (state, value) {
       state.totalTime = value
+    },
+    setCurrentSongId (state, value) {
+      state.currentSongId = value
     },
     // 歌单相关
     setCurrentSongNumber (state, value) {
@@ -99,6 +108,7 @@ const store = new Vuex.Store({
     getMusicPhoto: state => state.musicPhoto,
     getPlayProcess: state => state.playProcess,
     getMusicCurrentTime: state => state.musicCurrentTime,
+    getCurrentTime: state => state.currentTime,
     getMusicLastTime: state => state.musicLastTime,
     getMusicTime: state => state.musicTime,
     getPauseVisible: state => state.pauseVisible,
@@ -106,6 +116,7 @@ const store = new Vuex.Store({
     getMusicURL: state => state.musicURL,
     getMusicName: state => state.musicName,
     getTotalTime: state => state.totalTime,
+    getCurrentSongId: state => state.currentSongId,
     // 歌单相关
     getCurrentSongNumber: state => state.currentSongNumber,
     getMusicList: state => state.musicList,

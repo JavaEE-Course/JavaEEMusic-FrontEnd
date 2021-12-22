@@ -65,7 +65,6 @@ export default {
       this.singerAlbums = res.data.data.albums
     })
     // 判断是否关注这个歌手
-    console.log(userId)
     getFollowSingerAPI(userId).then(res => {
       const singerList = res.data.data
       console.log(userId)
