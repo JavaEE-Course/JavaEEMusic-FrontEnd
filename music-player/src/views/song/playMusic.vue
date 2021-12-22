@@ -23,23 +23,23 @@
         <div title="查看评分" class="el-icon-bell icon"></div>
         <div title="详细信息" class="el-icon-warning-outline icon"></div>
       </div>
-      <div class="process-card">
-        <el-slider v-model="playProcess"></el-slider>
-        <div>
-          <div class="music-time">0:00</div>
-          <div class="music-time" style="margin-left: 81%">{{musicTime}}</div>
-        </div>
-      </div>
-      <div class="bottom-card">
-        <img title="播放设置" src="../../assets/musicPlay/order.png" style="height: 40px;width: 40px"/>
-        <img title="上一首" src="../../assets/musicPlay/front.png" style="height: 40px;width: 40px"/>
-        <div v-show="pauseVisible" title="播放|暂停" class="el-icon-video-pause icon1" @click="playOrPause"></div>
-        <div v-show="playVisible" title="播放|暂停" class="el-icon-video-play icon1" @click="playOrPause"></div>
-        <img title="下一首" src="../../assets/musicPlay/next.png" style="height: 40px;width: 40px"/>
-        <div title="歌单列表" class="el-icon-more icon"></div>
-      </div>
+<!--      <div class="process-card">-->
+<!--        <el-slider v-model="playProcess"></el-slider>-->
+<!--        <div>-->
+<!--          <div class="music-time">0:00</div>-->
+<!--          <div class="music-time" style="margin-left: 81%">{{musicTime}}</div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="bottom-card">-->
+<!--        <img title="播放设置" src="../../assets/musicPlay/order.png" style="height: 40px;width: 40px"/>-->
+<!--        <img title="上一首" src="../../assets/musicPlay/front.png" style="height: 40px;width: 40px"/>-->
+<!--        <div v-show="pauseVisible" title="播放|暂停" class="el-icon-video-pause icon1" @click="playOrPause"></div>-->
+<!--        <div v-show="playVisible" title="播放|暂停" class="el-icon-video-play icon1" @click="playOrPause"></div>-->
+<!--        <img title="下一首" src="../../assets/musicPlay/next.png" style="height: 40px;width: 40px"/>-->
+<!--        <div title="歌单列表" class="el-icon-more icon"></div>-->
+<!--      </div>-->
     </el-card>
-    <audio v-show="false" ref='audio' :src="music" controls="controls"></audio>
+<!--    <audio v-show="false" ref='audio' :src="music" controls="controls"></audio>-->
     <!--右侧滚动歌词-->
   </div>
 </template>
@@ -137,7 +137,7 @@ export default {
 .card{
   background: transparent;
   margin-left: 150px;
-  height: 500px;
+  height: 370px;
   width: 400px;
 }
 .mid-card{

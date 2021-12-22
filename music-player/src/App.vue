@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <el-button v-if="testRoutePath()" class="el-icon-headset button-bar" circle @click="changeAudioBarVisible"></el-button>
-    <el-button v-if="testRoutePath() || this.$route.path === '/playMusic' " v-show="!detailVisible" class="el-icon-arrow-up detail-bar" circle @click="changeSongDetailInfo"></el-button>
-    <el-button v-if="testRoutePath() || this.$route.path === '/playMusic' " v-show="detailVisible" class="el-icon-arrow-down detail-bar" circle @click="changeSongDetailInfo"></el-button>
+    <el-button v-if="testRoutePath()" v-show="!detailVisible" class="el-icon-arrow-up detail-bar" circle @click="changeSongDetailInfo"></el-button>
+    <el-button v-if="testRoutePath()" v-show="detailVisible" class="el-icon-arrow-down detail-bar" circle @click="changeSongDetailInfo"></el-button>
     <AudioBar v-if="testRoutePath()" v-show="audioBarVisible" class="audio-bar"/>
     <router-view/>
   </div>
@@ -25,7 +25,6 @@ export default {
   methods: {
     changeSongDetailInfo () {
       this.detailVisible = !this.detailVisible
-      this.audioBarVisible = !this.audioBarVisible
       if (this.detailVisible) {
         this.routePath = this.$route.path
         this.$router.push('/playMusic')
@@ -44,8 +43,6 @@ export default {
       } else if (this.$route.path === '/register') {
         return false
       } else if (this.$route.path === '/forgetpassword') {
-        return false
-      } else if (this.$route.path === '/playMusic') {
         return false
       } else {
         return true
