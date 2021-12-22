@@ -17,7 +17,7 @@
           <el-input type="text" placeholder="搜索音乐"  v-model="keywords" class="input"></el-input>
         </li>
         <li>
-          <el-button class="button" type="primary" style="padding-left: 9px">搜索</el-button>
+          <el-button class="button" type="primary" style="padding-left: 9px" @click="search">搜索</el-button>
         </li>
         <li>
           <el-avatar class="head" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
@@ -46,6 +46,7 @@ export default{
   data () {
     return {
       nowIndex: 0,
+      keywords: '',
       items: [
         {
           name: '首页'
@@ -91,6 +92,9 @@ export default{
         window.sessionStorage.clear()
         this.$router.push('/login')
       }
+    },
+    search () {
+      this.$router.push({path: '/index/search', query: {info: this.keywords}})
     }
   }
 }

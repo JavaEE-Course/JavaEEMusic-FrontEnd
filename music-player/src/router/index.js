@@ -59,6 +59,11 @@ export default new Router({
           path: '/index/albumdetail',
           name: 'albumdetail',
           component: () => import('@/views/home/albumdetail')
+        },
+        {
+          path: '/index/search',
+          name: 'search',
+          component: () => import('@/views/home/search')
         }
       ]
     },

@@ -28,7 +28,12 @@
                       v-el-table-infinite-scroll="loadMore"
                       infinite-scroll-delay=500
                       infinite-scroll-disabled="noMore">
-              <el-table-column prop="song_name" label="音乐标题"></el-table-column>
+              <el-table-column prop="song_name" label="音乐标题">
+                <template slot-scope="scope">
+                  <span style="cursor:pointer;color:#2980b9;">{{scope.row.song_name}}</span>
+                  <span class="plus" @click="addToplay(scope.row.song_id)">+</span>
+                </template>
+              </el-table-column>
               <el-table-column label="歌手">{{albumInfo.singer_name}}</el-table-column>
               <el-table-column label="专辑">{{albumInfo.album_name}}</el-table-column>
             </el-table>
@@ -57,11 +62,27 @@ export default {
       albumInfo: {},
       songlists: []
     }
+  },
+  methods: {
+    addToplay (songid) {
+      // songid即为歌曲的标识
+      console.log(songid)
+    }
   }
 }
 </script>
 
 <style scoped>
+  .plus {
+    padding: 10px;
+    border-radius: 50%;
+    margin-left: 6px;
+    top: 2px;
+    font-size: 20px;
+    position: absolute;
+    font-weight: bold;
+    cursor: pointer;
+  }
   /deep/.el-table, .el-table tr, .el-table td, .el-table th {
     background-color: transparent!important;
   }
