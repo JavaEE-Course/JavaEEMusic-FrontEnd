@@ -4,35 +4,26 @@
       <div class="handle-box">
         <el-button class="handle-del mr10" type="primary" size="mini" @click="delAll">批量删除</el-button>
         <el-input v-model="select_word" class="handle-input mr10" size="mini" placeholder="筛选关键词"></el-input>
-        <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加专辑</el-button>
+        <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加用户</el-button>
       </div>
       <el-table ref="multipleTable" size="mini" border style="width: 100%" height="520px"
-                :data="data.filter(data => !select_word || data.singer_name.toLowerCase().includes(select_word.toLowerCase()))"
+                :data="data.filter(data => !select_word || data.nickName.toLowerCase().includes(select_word.toLowerCase()))"
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="40"></el-table-column>
-        <el-table-column label="专辑图片" width="110" align="center">
+        <el-table-column label="用户图片" width="110" align="center">
           <template slot-scope="scope">
             <div class="singer-img">
-              <img :src= "scope.row.cover_path"  alt="" style="width: 100%;"/>
+              <img :src= "scope.row.avatarPath"  alt="" style="width: 100%;"/>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="album_name" label="专辑名称" width="120" align="center"></el-table-column>
-        <el-table-column prop="singer_name" label="歌手" width="120" align="center"></el-table-column>
-        <el-table-column label="简介" prop="introduction" style="height: 100px">
-          <template slot-scope="scope">
-            <p style="height: 100px; overflow: scroll;">{{ scope.row.introduction }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column label="专辑管理" width="110" align="center">
-          <template slot-scope="scope">
-            <el-button size="mini" @click="albumEdit(scope.row)">专辑管理</el-button>
-          </template>
-        </el-table-column>
+        <el-table-column prop="nickname" label="用户昵称" width="120" align="center"></el-table-column>
+        <el-table-column prop="email" label="用户邮箱" width="120" align="center"></el-table-column>
+        <el-table-column label="用户性别" prop="gender" width="120" align="center"></el-table-column>
         <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row.album_id)">删除</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -48,18 +39,24 @@
       </div>
     </div>
 
-    <el-dialog title="添加专辑" :visible.sync="centerDialogVisible" width="400px" center>
+    <el-dialog title="添加用户" :visible.sync="centerDialogVisible" width="400px" center>
       <el-form class="demo-ruleForm" :model="registerForm" status-icon ref="registerForm" label-width="80px">
-        <el-form-item prop="name" label="专辑名称" size="mini">
-          <el-input v-model="registerForm.name" placeholder="专辑名称"></el-input>
+        <el-form-item prop="name" label="用户昵称" size="mini">
+          <el-input v-model="registerForm.name" placeholder="用户昵称"></el-input>
         </el-form-item>
-        <el-form-item prop="singer" label="专辑歌手" size="mini">
-          <el-input v-model="registerForm.singer" placeholder="专辑歌手"></el-input>
+        <el-form-item prop="email" label="用户邮箱" size="mini">
+          <el-input v-model="registerForm.email" placeholder="用户邮箱"></el-input>
         </el-form-item>
-        <el-form-item prop="introduction" label="专辑介绍" size="mini">
-          <el-input v-model="registerForm.introduction" type="textarea" placeholder="专辑介绍"></el-input>
+        <el-form-item label="用户性别" size="mini">
+          <el-radio-group v-model="registerForm.sex">
+            <el-radio :label="0">女</el-radio>
+            <el-radio :label="1">男</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="请输入专辑封面" size="mini">
+        <el-form-item prop="password" label="用户密码" size="mini">
+          <el-input v-model="registerForm.password" placeholder="用户密码"></el-input>
+        </el-form-item>
+        <el-form-item label="用户头像" size="mini">
           <el-upload ref="upfile"
                      style="display: inline"
                      :auto-upload="false"
@@ -80,14 +77,14 @@
     <!-- 编辑弹出框 -->
     <el-dialog title="编辑" :visible.sync="editVisible" width="400px">
       <el-form ref="form" :model="form" label-width="60px">
-        <el-form-item label="专辑名称" size="mini">
+        <el-form-item label="用户名称" size="mini">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="歌手" size="mini">
-          <el-input v-model="form.singer"></el-input>
+        <el-form-item label="邮箱" size="mini">
+          <el-input v-model="form.email"></el-input>
         </el-form-item>
-        <el-form-item label="简介" size="mini">
-          <el-input type="textarea" v-model="form.introduction"></el-input>
+        <el-form-item label="用户性别" size="mini">
+          <el-input v-model="form.gender"></el-input>
         </el-form-item>
         <el-form-item label="头像" size="mini">
           <el-upload ref="upfile"
@@ -119,16 +116,18 @@
 </template>
 
 <script>
-import { getallalbumAPI } from '@/api/getallalbum'
+import { getalluserAPI, useraddAPI } from '@/api/getalluser'
+import { edituserinfoAPI, deleteuserAPI } from '@/api/getuserinfo'
+
 export default {
   created () {
-    // 获取用户所有信息
-    // getallalbumAPI().then(res => {
-    //   console.log(res.data.data)
-    //   this.tableData = res.data.data
-    //   this.tempDate = res.data.data
-    //   this.currentPage = 1
-    // })
+    // 获取所有的用户
+    getalluserAPI().then(res => {
+      console.log(res.data.data)
+      this.tableData = res.data.data
+      this.tempDate = res.data.data
+      this.currentPage = 1
+    })
   },
   computed: {
     data () {
@@ -144,8 +143,9 @@ export default {
       registerForm: {
         // 添加框信息
         name: '',
-        singer: '',
-        introduction: ''
+        email: '',
+        sex: '',
+        password: ''
       },
       tableData: [],
       tempDate: [],
@@ -157,9 +157,8 @@ export default {
       form: {
         id: '',
         name: '',
-        singer: '',
-        pic: '',
-        introduction: ''
+        email: '',
+        gender: ''
       },
       pageSize: 5, // 页数
       currentPage: 1, // 当前页
@@ -180,43 +179,64 @@ export default {
     handleCurrentChange (val) {
       this.currentPage = val
     },
-    // 添加专辑
+    // 添加新用户
     addsinger () {
+      var sex = ''
+      if (this.registerForm.sex === 0) {
+        sex = '女'
+      }
+      if (this.registerForm.sex === 1) {
+        sex = '男'
+      }
+      var password = require('js-sha256').sha256(this.registerForm.password)
       let params = new FormData()
-      params.append('name', this.registerForm.name)
-      params.append('singer', this.registerForm.singer)
-      params.append('description', this.registerForm.introduction)
+      params.append('nickname', this.registerForm.name)
+      params.append('email', this.registerForm.singer)
+      params.append('password', password)
+      params.append('gender', sex)
       this.fileList.forEach(item => {
         params.append('avatar', item.raw)
       })
-      // edituserinfoAPI(params).then(res => {
-      //   console.log(res.data)
-      // })
+      useraddAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.centerDialogVisible = false
     },
     // 编辑
     handleEdit (row) {
       this.editVisible = true
+      var sex = -1
+      if (row.gender === '女') {
+        sex = 0
+      }
+      if (row.gender === '男') {
+        sex = 1
+      }
+      if (row.gender === '组合') {
+        sex = 2
+      }
       this.form = {
-        id: row.album_id,
-        name: row.album_name,
-        singer: row.singer_name,
-        introduction: row.introduction
+        id: row.id,
+        name: row.nickname,
+        email: row.email,
+        gender: sex
       }
     },
     // 保存编辑
     saveEdit () {
+      console.log(this.form.nickname)
       let params = new FormData()
       params.append('id', this.form.id)
-      params.append('name', this.form.name)
-      params.append('singer', this.form.singer)
-      params.append('introduction', this.form.introduction)
+      params.append('email', this.form.email)
+      params.append('password', '')
+      params.append('gender', this.form.gender)
+      params.append('nickname', this.form.name)
       this.fileList1.forEach(item => {
         params.append('avatar', item.raw)
       })
-      // edituserinfoAPI(params).then(res => {
-      //   console.log(res.data)
-      // })
+      edituserinfoAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.editVisible = false
     },
     // 删除
@@ -227,13 +247,12 @@ export default {
     // 确定删除
     deleteRow () {
       this.delVisible = false
-    },
-    // 专辑管理
-    albumEdit (row) {
-      var params = {
-        info: row
+      let params = {
+        'id': this.idx
       }
-      this.$router.push({path: '/admin/albumsongs', query: {info: params.info.album_id}})
+      deleteuserAPI(params).then(res => {
+        console.log(res.data)
+      })
     },
     // 获取批量要删除的列表
     handleSelectionChange (val) {

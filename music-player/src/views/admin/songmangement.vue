@@ -4,7 +4,6 @@
       <div class="handle-box">
         <el-button class="handle-del mr10" type="primary" size="mini" @click="delAll">批量删除</el-button>
         <el-input v-model="select_word" class="handle-input mr10" size="mini" placeholder="筛选关键词"></el-input>
-        <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加歌单</el-button>
       </div>
       <el-table ref="multipleTable" size="mini" border style="width: 100%" height="520px"
                 :data="data.filter(data => !select_word || data.name.toLowerCase().includes(select_word.toLowerCase()))"
@@ -31,7 +30,7 @@
         <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row.playlist_id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -46,39 +45,6 @@
         </el-pagination>
       </div>
     </div>
-
-    <el-dialog title="添加歌手" :visible.sync="centerDialogVisible" width="400px" center>
-      <el-form class="demo-ruleForm" :model="registerForm" status-icon ref="registerForm" label-width="80px">
-        <el-form-item prop="name" label="歌手名" size="mini">
-          <el-input v-model="registerForm.name" placeholder="歌手名"></el-input>
-        </el-form-item>
-        <el-form-item label="性别" size="mini">
-          <el-radio-group v-model="registerForm.sex">
-            <el-radio :label="0">女</el-radio>
-            <el-radio :label="1">男</el-radio>
-            <el-radio :label="2">组合</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item prop="introduction" label="歌手介绍" size="mini">
-          <el-input v-model="registerForm.introduction" type="textarea" placeholder="歌手介绍"></el-input>
-        </el-form-item>
-        <el-form-item label="请输入新头像" size="mini">
-          <el-upload ref="upfile"
-                     style="display: inline"
-                     :auto-upload="false"
-                     :on-change="handleChange"
-                     :file-list="fileList"
-                     action="#">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
-      </el-form>
-      <span class="dialog-footer" slot="footer">
-        <el-button size="mini" @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" size="mini" @click="addsinger">确 定</el-button>
-      </span>
-    </el-dialog>
 
     <!-- 编辑弹出框 -->
     <el-dialog title="编辑" :visible.sync="editVisible" width="400px">
@@ -149,7 +115,7 @@
 
 <script>
 // eslint-disable-next-line standard/object-curly-even-spacing
-import { getallplaylistAPI} from '@/api/getallplaylist'
+import { getallplaylistAPI, deleteplaylistAPI} from '@/api/getallplaylist'
 export default {
   created () {
     // 获取歌单
@@ -212,31 +178,6 @@ export default {
     handleCurrentChange (val) {
       this.currentPage = val
     },
-    // 添加歌手
-    addsinger () {
-      var sex = ''
-      if (this.registerForm.sex === 0) {
-        sex = '女'
-      }
-      if (this.registerForm.sex === 1) {
-        sex = '男'
-      }
-      if (this.registerForm.sex === 2) {
-        sex = '组合'
-      }
-      console.log(sex)
-      let params = new FormData()
-      params.append('name', this.registerForm.name)
-      params.append('sex', sex)
-      params.append('description', this.registerForm.introduction)
-      this.fileList.forEach(item => {
-        params.append('avatar', item.raw)
-      })
-      // edituserinfoAPI(params).then(res => {
-      //   console.log(res.data)
-      // })
-      this.centerDialogVisible = false
-    },
     // 编辑
     handleEdit (row) {
       this.editVisible = true
@@ -281,6 +222,12 @@ export default {
     // 确定删除
     deleteRow () {
       this.delVisible = false
+      let params = {
+        'playlist_id': this.idx
+      }
+      deleteplaylistAPI(params).then(res => {
+        console.log(res.data)
+      })
     },
     // 专辑管理
     albumEdit (id) {
@@ -308,7 +255,7 @@ export default {
 <style scoped>
   .handle-box {
     margin-bottom: 20px;
-    margin-left: -510px;
+    margin-left: -600px;
   }
 
   .handle-input {

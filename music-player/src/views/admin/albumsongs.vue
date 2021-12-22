@@ -40,9 +40,6 @@
     </div>
 
     <el-dialog title="添加歌曲" :visible.sync="centerDialogVisible" width="400px" center>
-      pic: '',
-      lyrics_path: '',
-      score: ''
       <el-form class="demo-ruleForm" :model="registerForm" status-icon ref="registerForm" label-width="80px">
         <el-form-item prop="name" label="歌曲名称" size="mini">
           <el-input v-model="registerForm.name" placeholder="歌曲名称"></el-input>
@@ -213,7 +210,6 @@ export default {
         console.log(res.data.data)
         this.songinfo = res.data.data
       })
-      this.editVisible = true
       this.form = {
         id: this.songinfo.id,
         songpath: this.songinfo.song_path,
@@ -225,6 +221,7 @@ export default {
       }
       this.imageUrl1 = this.songinfo.song_path
       console.log(this.imageUrl1)
+      this.editVisible = true
     },
     // 保存编辑
     saveEdit () {

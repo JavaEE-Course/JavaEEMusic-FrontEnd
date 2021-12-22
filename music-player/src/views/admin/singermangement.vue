@@ -150,7 +150,7 @@
 
 <script>
 import { getsingerAPI, getSingerDetailAPI } from '@/api/getsinger'
-
+import { singeraddAPI, singereditAPI, singerdeleteAPI } from '@/api/singeradd'
 export default {
   created () {
     // 获取歌手
@@ -233,9 +233,9 @@ export default {
       this.fileList.forEach(item => {
         params.append('avatar', item.raw)
       })
-      // edituserinfoAPI(params).then(res => {
-      //   console.log(res.data)
-      // })
+      singeraddAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.centerDialogVisible = false
     },
     // 编辑
@@ -264,14 +264,14 @@ export default {
       let params = new FormData()
       params.append('id', this.form.id)
       params.append('name', this.form.name)
-      params.append('sex', this.form.sex)
-      params.append('introduction', this.form.introduction)
+      params.append('type', this.form.sex)
+      params.append('description', this.form.introduction)
       this.fileList1.forEach(item => {
         params.append('avatar', item.raw)
       })
-      // edituserinfoAPI(params).then(res => {
-      //   console.log(res.data)
-      // })
+      singereditAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.editVisible = false
     },
     // 删除
@@ -282,6 +282,12 @@ export default {
     // 确定删除
     deleteRow () {
       this.delVisible = false
+      let params = {
+        'id': this.idx
+      }
+      singerdeleteAPI(params).then(res => {
+        console.log(res.data)
+      })
     },
     // 专辑管理
     albumEdit (id) {

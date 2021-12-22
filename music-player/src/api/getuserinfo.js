@@ -13,3 +13,10 @@ export function edituserinfoAPI (params) {
     data: params
   })
 }
+export function deleteuserAPI (params) {
+  return request({
+    url: '/api/user/delete' + params,
+    method: 'delete',
+    data: params
+  })
+}

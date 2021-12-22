@@ -17,17 +17,17 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="cover_path" label="歌曲图片" width="110" align="center">
+        <el-table-column label="歌曲图片" prop="cover_path" width="110" align="center">
           <template slot-scope="scope">
             <div class="singer-img">
-              <img :src= "tableData.cover_path"  alt="" style="width: 100%;"/>
+              <img :src= "scope.row.cover_path"  alt="" style="width: 100%;"/>
             </div>
           </template>
         </el-table-column>
         <el-table-column prop="song_name" label="歌曲名称" width="120" align="center"></el-table-column>
         <el-table-column label="歌单名称" width="120" align="center">{{tempDate.playlist_name}}</el-table-column>
-        <el-table-column label="专辑名称" width="120" align="center">{{tempDate.album_name}}</el-table-column>
-        <el-table-column label="歌手" width="120" align="center">{{tempDate.singer_name}}</el-table-column>
+        <el-table-column label="专辑名称" prop = "album_name" width="120" align="center"></el-table-column>
+        <el-table-column label="歌手" prop = "singer_name" width="120" align="center"></el-table-column>
         <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
@@ -48,9 +48,6 @@
     </div>
 
     <el-dialog title="添加歌曲" :visible.sync="centerDialogVisible" width="400px" center>
-      pic: '',
-      lyrics_path: '',
-      score: ''
       <el-form class="demo-ruleForm" :model="registerForm" status-icon ref="registerForm" label-width="80px">
         <el-form-item prop="name" label="歌曲名称" size="mini">
           <el-input v-model="registerForm.name" placeholder="歌曲名称"></el-input>

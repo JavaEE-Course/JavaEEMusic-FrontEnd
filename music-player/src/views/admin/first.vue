@@ -69,14 +69,13 @@ export default {
   created () {
     // 获取所有的用户
     getalluserAPI().then(res => {
-      console.log('usercount')
       this.userCount = res.data.data.length
       var list = res.data.data
       for (var i = 0; i < this.userCount; i++) {
         if (list[i].sex === '男') {
-          this.userSex.rows[0].总数++
-        } else {
           this.userSex.rows[1].总数++
+        } else {
+          this.userSex.rows[0].总数++
         }
       }
     })
@@ -90,7 +89,6 @@ export default {
     })
     // 获取所有的歌单
     getallplaylistAPI().then(res => {
-      console.log(res.data.data)
       this.songListCount = res.data.data.length
     })
     // 获取其它类型的歌单的数量
@@ -98,50 +96,42 @@ export default {
       'type': '欧美'
     }
     gettypeplaylistAPI(parm).then(res => {
-      console.log(res.data.data)
-      console.log(this.songStyle.rows[0])
       this.songStyle.rows[0].总数 = res.data.data.length
     })
     var parm1 = {
       'type': '华语'
     }
     gettypeplaylistAPI(parm1).then(res => {
-      console.log(res.data.data)
       this.songStyle.rows[1].总数 = res.data.data.length
     })
     var parm2 = {
       'type': '流行'
     }
     gettypeplaylistAPI(parm2).then(res => {
-      console.log(res.data.data)
       this.songStyle.rows[2].总数 = res.data.data.length
     })
     var parm3 = {
       'type': '说唱'
     }
     gettypeplaylistAPI(parm3).then(res => {
-      console.log(res.data.data)
       this.songStyle.rows[3].总数 = res.data.data.length
     })
     var parm4 = {
       'type': '摇滚'
     }
     gettypeplaylistAPI(parm4).then(res => {
-      console.log(res.data.data)
       this.songStyle.rows[4].总数 = res.data.data.length
     })
     var parm5 = {
       'type': '民谣'
     }
     gettypeplaylistAPI(parm5).then(res => {
-      console.log(res.data.data)
       this.songStyle.rows[5].总数 = res.data.data.length
     })
     var parm6 = {
       'type': '影视'
     }
     gettypeplaylistAPI(parm6).then(res => {
-      console.log(res.data.data)
       this.songStyle.rows[6].总数 = res.data.data.length
     })
   },
