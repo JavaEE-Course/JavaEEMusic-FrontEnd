@@ -120,6 +120,7 @@
 
 <script>
 import { getallalbumAPI } from '@/api/getallalbum'
+import { albumaddAPI } from '@/api/albummangement'
 export default {
   created () {
     // 获取歌手
@@ -189,9 +190,9 @@ export default {
       this.fileList.forEach(item => {
         params.append('avatar', item.raw)
       })
-      // edituserinfoAPI(params).then(res => {
-      //   console.log(res.data)
-      // })
+      albumaddAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.centerDialogVisible = false
     },
     // 编辑

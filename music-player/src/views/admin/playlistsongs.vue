@@ -4,19 +4,11 @@
       <div class="handle-box">
         <el-button class="handle-del mr10" type="primary" size="mini" @click="delAll">批量删除</el-button>
         <el-input v-model="select_word" class="handle-input mr10" size="mini" placeholder="筛选关键词(歌曲名称)"></el-input>
-        <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加歌曲</el-button>
       </div>
       <el-table ref="multipleTable" size="mini" border style="width: 100%" height="520px"
                 :data="data.filter(data => !select_word || data.song_name.toLowerCase().includes(select_word.toLowerCase()))"
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="40"></el-table-column>
-        <el-table-column label="歌单图片" width="110" align="center">
-          <template slot-scope="scope">
-            <div class="singer-img">
-              <img :src= "tempDate.playlist_picture"  alt="" style="width: 100%;"/>
-            </div>
-          </template>
-        </el-table-column>
         <el-table-column label="歌曲图片" prop="cover_path" width="110" align="center">
           <template slot-scope="scope">
             <div class="singer-img">
@@ -25,12 +17,16 @@
           </template>
         </el-table-column>
         <el-table-column prop="song_name" label="歌曲名称" width="120" align="center"></el-table-column>
-        <el-table-column label="歌单名称" width="120" align="center">{{tempDate.playlist_name}}</el-table-column>
         <el-table-column label="专辑名称" prop = "album_name" width="120" align="center"></el-table-column>
         <el-table-column label="歌手" prop = "singer_name" width="120" align="center"></el-table-column>
+        <el-table-column label="歌词" prop = "lyrics_path" width="180" align="center">
+          <template slot-scope="scope">
+            <p style="height: 100px; overflow: scroll;">{{ scope.row.lyrics_path }}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="歌曲路径" prop = "song_path" width="140" align="center"></el-table-column>
         <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row.album_id)">删除</el-button>
           </template>
         </el-table-column>
@@ -55,8 +51,17 @@
         <el-form-item prop="singer" label="歌手" size="mini">
           <el-input v-model="registerForm.singer" placeholder="歌曲歌手"></el-input>
         </el-form-item>
-        <el-form-item prop="score" label="歌曲评分" size="mini">
-          <el-input v-model="registerForm.score" placeholder="歌曲评分"></el-input>
+        <el-form-item prop="lyrics" label="歌词" size="mini">
+          <el-input v-model="registerForm.lyrics" type="textarea" placeholder="歌手介绍"></el-input>
+        </el-form-item>
+        <el-form-item label="歌曲" size="mini">
+          <el-upload ref="upfile"
+                     style="display: inline"
+                     :auto-upload="false"
+                     :on-change="handleChange2"
+                     :file-list="fileList2"
+                     action="#">
+          </el-upload>
         </el-form-item>
         <el-form-item label="请输入歌曲封面" size="mini">
           <el-upload ref="upfile"
@@ -151,13 +156,13 @@ export default {
       fileList: [],
       imageUrl1: '',
       fileList1: [],
+      fileList2: [],
       registerForm: {
         // 添加框信息
         pic: '',
         name: '',
         singer: '',
-        lyrics_path: '',
-        score: ''
+        lyrics: ''
       },
       tableData: [],
       tempDate: [],
@@ -191,18 +196,26 @@ export default {
       this.fileList1 = fileList
       this.imageUrl1 = URL.createObjectURL(file.raw)
     },
+    handleChange2 (file, fileList) {
+      this.fileList2 = fileList
+    },
     // 获取当前页
     handleCurrentChange (val) {
       this.currentPage = val
     },
     // 添加歌曲
     addsinger () {
+      let query = this.$route.query
       let params = new FormData()
+      params.append('playlist_id', query.info)
       params.append('name', this.registerForm.name)
       params.append('singer', this.registerForm.singer)
-      params.append('description', this.registerForm.introduction)
+      params.append('lyrics_path', this.registerForm.lyrics)
       this.fileList.forEach(item => {
         params.append('avatar', item.raw)
+      })
+      this.fileList2.forEach(item => {
+        params.append('song_path', item.raw)
       })
       // edituserinfoAPI(params).then(res => {
       //   console.log(res.data)

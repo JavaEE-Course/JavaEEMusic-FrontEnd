@@ -20,9 +20,9 @@
         <el-table-column prop="song_name" label="歌曲名称" width="120" align="center"></el-table-column>
         <el-table-column label="专辑名称" width="120" align="center">{{tempDate.album_name}}</el-table-column>
         <el-table-column label="歌手" width="120" align="center">{{tempDate.singer_name}}</el-table-column>
-        <el-table-column label="操作" width="150" align="center">
+        <el-table-column label="操作" width="250" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)" type="primary">查看歌曲详细信息</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row.album_id)">删除</el-button>
           </template>
         </el-table-column>
@@ -221,6 +221,9 @@ export default {
       }
       this.imageUrl1 = this.songinfo.song_path
       console.log(this.imageUrl1)
+      this.sleep()
+    },
+    sleep () {
       this.editVisible = true
     },
     // 保存编辑
