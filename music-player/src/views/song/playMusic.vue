@@ -81,7 +81,7 @@
         :visible.sync="commentVisible"
         width="30%">
         <div class="block">
-          <span class="demonstration">查看评论</span>
+          <span class="demonstration">暂无评论</span>
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="commentVisible = false">取 消</el-button>
@@ -196,9 +196,15 @@ export default {
     submitScore () {
       const scoreUpdate = {'user_id': window.sessionStorage.getItem('userID'), 'song_id': this.songId, 'score': Number(this.myScore)}
       commitSongScoreAPI(scoreUpdate).then(res => {
+        // 重新获取歌曲评分
+        this.scoreVisible = false
+        const songId = {'song_id': this.$store.getters.getCurrentSongId}
+        // 接收歌曲详细信息
+        getSongDetailAPI(songId).then(res => {
+          this.songScore = isNaN(res.data.data.song_Score) ? '暂无评分' : res.data.data.song_Score
+          console.log(this.songScore)
+        })
       })
-      console.log(this.myScore)
-      this.scoreVisible = false
     },
     // 自动切换歌词
     changeLyric () {
@@ -285,8 +291,6 @@ export default {
           this.handleLyrics()
         })
       }
-      console.log('鸡汤来喽')
-      console.log(this.followVisible)
       if (this.tag === 0) {
         // 判断是否关注这个歌手
         const userId = {'userId': window.sessionStorage.getItem('userID')}
@@ -335,7 +339,7 @@ export default {
     checkScore () {
       const getScore = {'user_id': window.sessionStorage.getItem('userID'), 'song_id': this.songId}
       getSongScoreAPI(getScore).then(res => {
-        console.log(res)
+        this.myScore = res.data.data
       })
       this.scoreVisible = true
     },

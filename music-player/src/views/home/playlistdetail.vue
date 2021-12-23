@@ -134,14 +134,14 @@ export default {
       })
     },
     followAndUnfollow () {
-      const followList = {'user_id': window.sessionStorage.getItem('userID'), 'playlist_id': Number(this.playlistInfo.playlist_id)}
-      console.log('哈哈哈')
-      console.log(this.playlistInfo)
+      const followList = {'user_id': Number(window.sessionStorage.getItem('userID')), 'playlist_id': Number(this.playlistInfo.playlist_id)}
       if (this.followVisible === true) {
         // 已关注，需要取关
         this.followVisible = false
         this.unfollowVisible = true
         unfollowPlaylistAPI(followList).then(res => {
+          console.log(followList)
+          console.log(res)
         })
         this.$message({
           message: '已取消收藏歌单',
@@ -152,6 +152,8 @@ export default {
         this.unfollowVisible = false
         this.followVisible = true
         followPlaylistAPI(followList).then(res => {
+          console.log(followList)
+          console.log(res)
         })
         this.$message({
           message: '已成功收藏歌单',
