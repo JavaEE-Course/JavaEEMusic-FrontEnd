@@ -117,19 +117,22 @@ export default {
       const musicInfo = this.$store.getters.getNewMusicInfo
       if (musicInfo.length !== 0) {
         this.$store.commit('setNewMusicInfo', [])
-        // 判断以下不能重复
-        let tag = false
-        for (let i = 0; i < this.musicList.length; i++) {
-          if (this.musicList[i].song_id === musicInfo[0].song_id) {
-            tag = true
-            break
+        for (let t = 0; t < musicInfo.length; t++) {
+          const info = musicInfo[t]
+          // 判断以下不能重复
+          let tag = false
+          for (let i = 0; i < this.musicList.length; i++) {
+            if (this.musicList[i].song_id === info[0].song_id) {
+              tag = true
+              break
+            }
           }
-        }
-        if (!tag) {
-          this.musicList.push(musicInfo[0])
-          this.songCoverList.push(musicInfo[2])
-          this.songPathList.push(musicInfo[3])
-          this.songNameList.push(musicInfo[4])
+          if (!tag) {
+            this.musicList.push(info[0])
+            this.songCoverList.push(info[2])
+            this.songPathList.push(info[3])
+            this.songNameList.push(info[4])
+          }
         }
       }
     },

@@ -26,7 +26,7 @@ export default {
     changeSongDetailInfo () {
       this.detailVisible = !this.detailVisible
       if (this.detailVisible) {
-        this.routePath = this.$route.path
+        this.routePath = this.$route.fullPath
         if (this.$route.path !== '/playMusic') {
           this.$router.push('/playMusic')
         } else this.$router.push('/index')

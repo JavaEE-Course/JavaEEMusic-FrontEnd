@@ -88,6 +88,7 @@ export default {
         // 歌曲ID
         // 封面路径 cover_path
         // 歌曲路径 song_path
+        let resList = []
         let list = []
         let songInfo = res.data.data
         songInfo['song_id'] = songid
@@ -96,7 +97,8 @@ export default {
         list.push(res.data.data.cover_path)
         list.push(res.data.data.song_path)
         list.push(res.data.data.song_name)
-        this.$store.commit('setNewMusicInfo', list)
+        resList.push(list)
+        this.$store.commit('setNewMusicInfo', resList)
         this.$message({
           message: '已成功添加到播放列表',
           type: 'success'
