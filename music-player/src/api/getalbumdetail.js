@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getalbumdetailAPI (params) {
   return request({
-    url: '/api/song/get/albumDetails',
+    url: '/api/album/get/albumDetails',
     method: 'get',
     params
   })

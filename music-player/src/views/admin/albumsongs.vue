@@ -7,7 +7,7 @@
         <el-button type="primary" size="mini" @click="centerDialogVisible = true">添加歌曲</el-button>
       </div>
       <el-table ref="multipleTable" size="mini" border style="width: 100%" height="520px"
-                :data="data.filter(data => !select_word || data.singer_name.toLowerCase().includes(select_word.toLowerCase()))"
+                :data="data.filter(data => !select_word || data.song_name.toLowerCase().includes(select_word.toLowerCase()))"
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="40"></el-table-column>
         <el-table-column label="专辑图片" width="110" align="center">
@@ -23,7 +23,7 @@
         <el-table-column label="操作" width="250" align="center">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)" type="primary">查看歌曲详细信息</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row.album_id)">删除</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row.song_id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -47,8 +47,21 @@
         <el-form-item prop="singer" label="歌手" size="mini">
           <el-input v-model="registerForm.singer" placeholder="歌曲歌手"></el-input>
         </el-form-item>
+        <el-form-item prop="lyrics" label="歌词" size="mini">
+          <el-input v-model="registerForm.lyrics" type="textarea" placeholder="歌词"></el-input>
+        </el-form-item>
         <el-form-item prop="score" label="歌曲评分" size="mini">
           <el-input v-model="registerForm.score" placeholder="歌曲评分"></el-input>
+        </el-form-item>
+        <el-form-item label="歌曲" size="mini">
+          <el-upload ref="upfile"
+                     style="display: inline"
+                     :auto-upload="false"
+                     :on-change="handleChange2"
+                     :file-list="fileList2"
+                     action="#">
+            <i class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
         </el-form-item>
         <el-form-item label="请输入歌曲封面" size="mini">
           <el-upload ref="upfile"
@@ -91,11 +104,21 @@
         <el-form-item label="歌词" size="mini">
           <el-input type="textarea" v-model="form.lyrics_path"></el-input>
         </el-form-item>
-        <el-form-item label="歌曲" size="mini">
-          <el-input v-model="form.songpath"></el-input>
-        </el-form-item>
         <el-form-item label="评分" size="mini">
           <el-input v-model="form.score"></el-input>
+        </el-form-item>
+        <el-form-item label="歌曲" size="mini">
+        <el-input v-model="form.songpath"></el-input>
+      </el-form-item>
+        <el-form-item label="歌曲" size="mini">
+          <el-upload ref="upfile"
+                     style="display: inline"
+                     :auto-upload="false"
+                     :on-change="handleChange3"
+                     :file-list="fileList3"
+                     action="#">
+            <i class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -118,6 +141,8 @@
 <script>
 import { getalbumdetailAPI } from '@/api/getalbumdetail'
 import { getSongDetailAPI } from '@/api/getsonglist'
+// eslint-disable-next-line standard/object-curly-even-spacing
+import { albumaddsongAPI, albumeditsongAPI, albumdeletesongAPI } from '@/api/albummangement'
 export default {
   created () {
     // 获取专辑歌曲
@@ -143,13 +168,15 @@ export default {
       fileList: [],
       imageUrl1: '',
       fileList1: [],
+      fileList2: [],
+      fileList3: [],
       registerForm: {
         // 添加框信息
         pic: '',
         name: '',
+        score: 0.0,
         singer: '',
-        lyrics_path: '',
-        score: ''
+        lyrics: ''
       },
       tableData: [],
       tempDate: [],
@@ -170,7 +197,8 @@ export default {
       pageSize: 5, // 页数
       currentPage: 1, // 当前页
       idx: -1,
-      songinfo: {}
+      songinfo: {},
+      song_id: ''
     }
   },
   methods: {
@@ -183,22 +211,33 @@ export default {
       this.fileList1 = fileList
       this.imageUrl1 = URL.createObjectURL(file.raw)
     },
+    handleChange2 (file, fileList) {
+      this.fileList2 = fileList
+    },
+    handleChange3 (file, fileList) {
+      this.fileList3 = fileList
+    },
     // 获取当前页
     handleCurrentChange (val) {
       this.currentPage = val
     },
     // 添加歌曲
     addsinger () {
+      let query = this.$route.query
       let params = new FormData()
+      params.append('album_id', query.info)
       params.append('name', this.registerForm.name)
-      params.append('singer', this.registerForm.singer)
-      params.append('description', this.registerForm.introduction)
+      params.append('score', this.registerForm.score)
+      params.append('lyrics_path', this.registerForm.lyrics)
       this.fileList.forEach(item => {
-        params.append('avatar', item.raw)
+        params.append('cover', item.raw)
       })
-      // edituserinfoAPI(params).then(res => {
-      //   console.log(res.data)
-      // })
+      this.fileList2.forEach(item => {
+        params.append('song', item.raw)
+      })
+      albumaddsongAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.centerDialogVisible = false
     },
     // 编辑
@@ -206,6 +245,7 @@ export default {
       var parm = {
         'song_id': row.song_id
       }
+      this.song_id = row.song_id
       getSongDetailAPI(parm).then(res => {
         console.log(res.data.data)
         this.songinfo = res.data.data
@@ -219,7 +259,7 @@ export default {
         pic: this.songinfo.cover_path,
         score: this.songinfo.song_score
       }
-      this.imageUrl1 = this.songinfo.song_path
+      this.imageUrl1 = this.songinfo.cover_path
       console.log(this.imageUrl1)
       this.sleep()
     },
@@ -228,20 +268,22 @@ export default {
     },
     // 保存编辑
     saveEdit () {
+      let query = this.$route.query
       let params = new FormData()
       //   pic: '',
-      params.append('id', this.form.id)
+      params.append('id', this.song_id)
+      params.append('album_id', query.info)
       params.append('name', this.form.name)
-      params.append('singer', this.form.singer)
       params.append('lyrics_path', this.form.lyrics_path)
-      params.append('songpath', this.form.songpath)
-      params.append('score', this.form.score)
       this.fileList1.forEach(item => {
-        params.append('avatar', item.raw)
+        params.append('cover', item.raw)
       })
-      // edituserinfoAPI(params).then(res => {
-      //   console.log(res.data)
-      // })
+      this.fileList3.forEach(item => {
+        params.append('song', item.raw)
+      })
+      albumeditsongAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.editVisible = false
     },
     // 删除
@@ -251,6 +293,12 @@ export default {
     },
     // 确定删除
     deleteRow () {
+      let params = {
+        'song_id': this.idx
+      }
+      albumdeletesongAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.delVisible = false
     },
     // 专辑管理
