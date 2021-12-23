@@ -31,7 +31,9 @@ const store = new Vuex.Store({
     // 定时播放相关
     clock: '',
     // 目前的播放时间
-    currentTime: 0
+    currentTime: 0,
+    // 添加歌曲到播放列表
+    newMusicInfo: []
   },
   mutations: {
     setMusicPhoto (state, value) {
@@ -102,6 +104,10 @@ const store = new Vuex.Store({
     // 定播放相关
     setClock (state, value) {
       state.clock = value
+    },
+    // 新增歌曲到播放列表
+    setNewMusicInfo (state, value) {
+      state.newMusicInfo = value
     }
   },
   getters: {
@@ -129,7 +135,9 @@ const store = new Vuex.Store({
     getTypePic: state => state.typePic,
     getTypeNumber: state => state.typeNumber,
     // 定播放相关
-    getClock: state => state.clock
+    getClock: state => state.clock,
+    // 新增歌曲到列表
+    getNewMusicInfo: state => state.newMusicInfo
   }
 })
 export default store
