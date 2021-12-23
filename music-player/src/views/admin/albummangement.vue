@@ -120,7 +120,8 @@
 
 <script>
 import { getallalbumAPI } from '@/api/getallalbum'
-import { albumaddAPI } from '@/api/albummangement'
+// eslint-disable-next-line standard/object-curly-even-spacing
+import { albumaddAPI, albumeditAPI, albumdeleteAPI} from '@/api/albummangement'
 export default {
   created () {
     // 获取歌手
@@ -188,9 +189,15 @@ export default {
       params.append('singer', this.registerForm.singer)
       params.append('description', this.registerForm.introduction)
       this.fileList.forEach(item => {
-        params.append('avatar', item.raw)
+        params.append('cover', item.raw)
       })
       albumaddAPI(params).then(res => {
+        if (res.data.code !== 200) {
+          this.$message({
+            message: res.data.message,
+            type: 'warning'
+          })
+        }
         console.log(res.data)
       })
       this.centerDialogVisible = false
@@ -211,13 +218,13 @@ export default {
       params.append('id', this.form.id)
       params.append('name', this.form.name)
       params.append('singer', this.form.singer)
-      params.append('introduction', this.form.introduction)
+      params.append('description', this.form.introduction)
       this.fileList1.forEach(item => {
-        params.append('avatar', item.raw)
+        params.append('cover', item.raw)
       })
-      // edituserinfoAPI(params).then(res => {
-      //   console.log(res.data)
-      // })
+      albumeditAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.editVisible = false
     },
     // 删除
@@ -227,6 +234,12 @@ export default {
     },
     // 确定删除
     deleteRow () {
+      let params = {
+        'id': this.idx
+      }
+      albumdeleteAPI(params).then(res => {
+        console.log(res.data)
+      })
       this.delVisible = false
     },
     // 专辑管理
