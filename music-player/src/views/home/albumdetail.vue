@@ -13,7 +13,7 @@
             <span>歌手：{{albumInfo.singer_name}}</span>
           </div>
         </div>
-        <div class="playAllBtn iconfont icon-play"> 播放全部</div>
+        <div class="playAllBtn iconfont icon-play" @click="addToPlayAll"> 播放全部</div>
         <div class="playlist-desc">
           <span>简介：</span>
           <span :title="albumInfo.introduction">{{albumInfo.introduction}}</span>
@@ -65,8 +65,34 @@ export default {
     }
   },
   methods: {
+    addToPlayAll () {
+      for (let i = 0; i < this.songlists.length; i++) {
+        const id = this.songlists[i].song_id
+        const songId = {'song_id': id}
+        // 获取歌曲详细信息
+        getSongDetailAPI(songId).then(res => {
+          // 需要的内容：
+          // 歌曲本身
+          // 歌曲ID
+          // 封面路径 cover_path
+          // 歌曲路径 song_path
+          let list = []
+          let songInfo = res.data.data
+          songInfo['song_id'] = id
+          list.push(songInfo)
+          list.push(id)
+          list.push(res.data.data.cover_path)
+          list.push(res.data.data.song_path)
+          list.push(res.data.data.song_name)
+          this.$store.commit('addNewMusicInfo', list)
+        })
+      }
+      this.$message({
+        message: '已成功添加到播放列表',
+        type: 'success'
+      })
+    },
     addToplay (songid) {
-      console.log(songid)
       const songId = {'song_id': songid}
       // 获取歌曲详细信息
       getSongDetailAPI(songId).then(res => {
@@ -76,6 +102,7 @@ export default {
         // 歌曲ID
         // 封面路径 cover_path
         // 歌曲路径 song_path
+        let resList = []
         let list = []
         let songInfo = res.data.data
         songInfo['song_id'] = songid
@@ -84,7 +111,8 @@ export default {
         list.push(res.data.data.cover_path)
         list.push(res.data.data.song_path)
         list.push(res.data.data.song_name)
-        this.$store.commit('setNewMusicInfo', list)
+        resList.push(list)
+        this.$store.commit('setNewMusicInfo', resList)
         this.$message({
           message: '已成功添加到播放列表',
           type: 'success'

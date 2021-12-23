@@ -108,6 +108,10 @@ const store = new Vuex.Store({
     // 新增歌曲到播放列表
     setNewMusicInfo (state, value) {
       state.newMusicInfo = value
+    },
+    // 新增整张专辑到播放列表
+    addNewMusicInfo (state, value) {
+      state.newMusicInfo.push(value)
     }
   },
   getters: {

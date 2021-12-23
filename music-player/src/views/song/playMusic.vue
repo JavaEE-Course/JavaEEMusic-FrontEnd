@@ -154,22 +154,22 @@ export default {
     if (window.sessionStorage.getItem('userID') === null) {
       this.$router.push({ path: '/login' })
     }
-    const songId = {'song_id': this.$store.getters.getCurrentSongId}
-    this.songId = this.$store.getters.getCurrentSongId
-    // 接收歌曲详细信息
-    getSongDetailAPI(songId).then(res => {
-      this.music = res.data.data.song_path
-      this.cover = res.data.data.cover_path
-      this.songName = res.data.data.song_name
-      this.singerName = res.data.data.singer_name
-      this.singerId = res.data.data.singer_id
-      this.albumName = res.data.data.album_name
-      this.commentNumber = res.data.data.comment_number
-      this.songScore = isNaN(res.data.data.song_Score) ? '暂无' : res.data.data.song_Score
-      this.lyrics = res.data.data.lyrics_path
-      this.lyricsTimeList = []
-      this.handleLyrics()
-    })
+    // const songId = {'song_id': this.$store.getters.getCurrentSongId}
+    // this.songId = this.$store.getters.getCurrentSongId
+    // // 接收歌曲详细信息
+    // getSongDetailAPI(songId).then(res => {
+    //   this.music = res.data.data.song_path
+    //   this.cover = res.data.data.cover_path
+    //   this.songName = res.data.data.song_name
+    //   this.singerName = res.data.data.singer_name
+    //   this.singerId = res.data.data.singer_id
+    //   this.albumName = res.data.data.album_name
+    //   this.commentNumber = res.data.data.comment_number
+    //   this.songScore = isNaN(res.data.data.song_Score) ? '暂无' : res.data.data.song_Score
+    //   this.lyrics = res.data.data.lyrics_path
+    //   this.lyricsTimeList = []
+    //   this.handleLyrics()
+    // })
   },
   mounted () {
     this.timer = setInterval(this.changeSong, 600)
@@ -281,7 +281,7 @@ export default {
           this.handleLyrics()
         })
       }
-      if (this.tag === 0){
+      if (this.tag === 0) {
         // 判断是否关注这个歌手
         const userId = {'userId': window.sessionStorage.getItem('userID')}
         getFollowSingerAPI(userId).then(res => {
