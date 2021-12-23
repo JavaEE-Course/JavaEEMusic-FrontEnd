@@ -71,7 +71,8 @@ export default {
       // 定时播放相关
       clock: '',
       timer: '',
-      lyricTimer: ''
+      lyricTimer: '',
+      newSongTimer: ''
     }
   },
   created () {
@@ -100,6 +101,7 @@ export default {
   mounted () {
     this.timer = setInterval(this.store, 700)
     this.lyricTimer = setInterval(this.updateLyric, 200)
+    this.newSongTimer = setInterval(this.addNewSong, 100)
   },
   methods: {
     store () {
@@ -109,6 +111,27 @@ export default {
     // 更新歌词
     updateLyric () {
       this.$store.commit('setCurrentTime', this.$refs.audio.currentTime)
+    },
+    // 添加新的歌曲到播放列表
+    addNewSong () {
+      const musicInfo = this.$store.getters.getNewMusicInfo
+      if (musicInfo.length !== 0) {
+        this.$store.commit('setNewMusicInfo', [])
+        // 判断以下不能重复
+        let tag = false
+        for (let i = 0; i < this.musicList.length; i++) {
+          if (this.musicList[i].song_id === musicInfo[0].song_id) {
+            tag = true
+            break
+          }
+        }
+        if (!tag) {
+          this.musicList.push(musicInfo[0])
+          this.songCoverList.push(musicInfo[2])
+          this.songPathList.push(musicInfo[3])
+          this.songNameList.push(musicInfo[4])
+        }
+      }
     },
     sleep (time) {
       return new Promise((resolve) => setTimeout(resolve, time))

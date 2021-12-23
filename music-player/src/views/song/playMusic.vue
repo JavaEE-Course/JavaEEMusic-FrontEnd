@@ -61,6 +61,50 @@
         </li>
       </ul>
     </el-card>
+     <!--其他信息-->
+      <!--收藏歌曲到某个歌单-->
+      <el-dialog
+        title="收藏歌曲"
+        :visible.sync="favoriteDialogVisible"
+        width="30%">
+        <div class="block">
+          <span class="demonstration">收藏歌曲</span>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="favoriteDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleFavorite">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!--查看歌曲评论-->
+      <el-dialog
+        title="歌曲评论"
+        :visible.sync="commentVisible"
+        width="30%">
+        <div class="block">
+          <span class="demonstration">查看评论</span>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="commentVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleComment">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!--歌曲评分-->
+      <el-dialog
+        title="歌曲评分"
+        :visible.sync="scoreVisible"
+        width="30%">
+        <div class="block">
+          <span class="demonstration">请给出您的评分</span>
+          <el-rate
+            v-model="myScore"
+            :colors="colors">
+          </el-rate>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="scoreVisible = false">取 消</el-button>
+          <el-button type="primary" @click="submitScore">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -88,8 +132,11 @@ export default {
       favoriteVisible: true,
       followVisible: true,
       playVisible: true,
+      scoreVisible: false,
+      commentVisible: false,
+      favoriteDialogVisible: false,
+      tag: 0,
       // 定时器
-      clock: '',
       timer: '',
       lyricTimer: '',
       // 歌词相关
@@ -97,14 +144,16 @@ export default {
       lyricsTimeList: [],
       currentLyrics: '',
       topLyricList: ['', '', '', '', ''],
-      bottomLyricList: ['', '', '', '', '']
+      bottomLyricList: ['', '', '', '', ''],
+      // 评分相关
+      colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+      myScore: null
     }
   },
   created () {
     if (window.sessionStorage.getItem('userID') === null) {
       this.$router.push({ path: '/login' })
     }
-    const userId = {'userId': window.sessionStorage.getItem('userID')}
     const songId = {'song_id': this.$store.getters.getCurrentSongId}
     this.songId = this.$store.getters.getCurrentSongId
     // 接收歌曲详细信息
@@ -121,31 +170,32 @@ export default {
       this.lyricsTimeList = []
       this.handleLyrics()
     })
-    // 判断是否关注这个歌手
-    getFollowSingerAPI(userId).then(res => {
-      const singerList = res.data.data
-      let tag = false
-      const singerID = Number(this.$route.query.id)
-      for (let i = 0; i < singerList.length; i++) {
-        if (singerList[i].id === singerID) {
-          // 确实关注了这个歌手
-          tag = true
-          this.followVisible = true
-          this.unfollowVisible = false
-          break
-        }
-      }
-      if (!tag) {
-        this.followVisible = false
-        this.unfollowVisible = true
-      }
-    })
   },
   mounted () {
     this.timer = setInterval(this.changeSong, 600)
     this.lyricsTimer = setInterval(this.changeLyric, 200)
   },
+  destroyed () {
+    if (this.timer) {
+      clearInterval(this.timer)
+    } else if (this.lyricTimer) {
+      clearInterval(this.lyricsTimer)
+    }
+  },
   methods: {
+    // 收藏歌曲
+    handleFavorite () {
+      this.favoriteDialogVisible = false
+    },
+    // 查看评论
+    handleComment () {
+      this.commentVisible = false
+    },
+    // 提交评分
+    submitScore () {
+      console.log(this.myScore)
+      this.scoreVisible = false
+    },
     // 自动切换歌词
     changeLyric () {
       const time = this.$store.getters.getCurrentTime
@@ -231,6 +281,26 @@ export default {
           this.handleLyrics()
         })
       }
+      if (this.tag === 0){
+        // 判断是否关注这个歌手
+        const userId = {'userId': window.sessionStorage.getItem('userID')}
+        getFollowSingerAPI(userId).then(res => {
+          const singerList = res.data.data
+          let tag = false
+          for (let i = 0; i < singerList.length; i++) {
+            if (singerList[i].id === this.singerId) {
+              // 确实关注了这个歌手
+              tag = true
+              this.followVisible = false
+              break
+            }
+          }
+          if (!tag) {
+            this.followVisible = true
+          }
+          this.tag = 1
+        })
+      }
     },
     // 关注歌手
     followAndUnfollow () {
@@ -257,15 +327,15 @@ export default {
     },
     // 查看评分
     checkScore () {
-
+      this.scoreVisible = true
     },
     // 查看评论
     checkComment () {
-
+      this.commentVisible = true
     },
     // 收藏或取消收藏
     favoriteOrNot () {
-
+      this.favoriteDialogVisible = true
     }
   }
 }

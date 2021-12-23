@@ -46,6 +46,7 @@
 
 <script>
 import { getalbumdetailAPI } from '@/api/getalbumdetail'
+import { getSongDetailAPI } from '../../api/getsonglist'
 export default {
   created () {
     var parm = {
@@ -65,8 +66,30 @@ export default {
   },
   methods: {
     addToplay (songid) {
-      // songid即为歌曲的标识
       console.log(songid)
+      const songId = {'song_id': songid}
+      // 获取歌曲详细信息
+      getSongDetailAPI(songId).then(res => {
+        console.log(res)
+        // 需要的内容：
+        // 歌曲本身
+        // 歌曲ID
+        // 封面路径 cover_path
+        // 歌曲路径 song_path
+        let list = []
+        let songInfo = res.data.data
+        songInfo['song_id'] = songid
+        list.push(songInfo)
+        list.push(songid)
+        list.push(res.data.data.cover_path)
+        list.push(res.data.data.song_path)
+        list.push(res.data.data.song_name)
+        this.$store.commit('setNewMusicInfo', list)
+        this.$message({
+          message: '已成功添加到播放列表',
+          type: 'success'
+        })
+      })
     }
   }
 }

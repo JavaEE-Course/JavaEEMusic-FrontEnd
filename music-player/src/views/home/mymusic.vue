@@ -19,6 +19,12 @@
         <div class="songs-wrap">
           <div class="list">
             <ul style="margin-left: -35px">
+              <li>
+                <el-card class="card">
+                  <img src="../../assets/playList/createPlayList.png" alt="rec" style="height: 140px;margin-top: -10px" class="img">
+                  <div  class="word"  style="color: #6A5ACD">新建歌单</div>
+                </el-card>
+              </li>
               <li v-on:mouseover="changePlaylistActive(item)" v-on:mouseout="removePlaylistActive()" v-on:mousemove="updatePlaylistXY()" class=" icon-play" v-for="(item,index) in playListPageList[playListPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
                 <el-card class="card">
                   <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px" class="img">
