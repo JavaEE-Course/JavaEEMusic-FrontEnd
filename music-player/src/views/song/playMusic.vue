@@ -112,6 +112,7 @@
 <script>
 import { getSongDetailAPI } from '../../api/getsonglist'
 import {followAndUnfollowAPI, getFollowSingerAPI} from '../../api/getsinger'
+import {commitSongScoreAPI, getSongScoreAPI} from '../../api/songDetail'
 
 export default {
   name: 'PlayMusic',
@@ -193,6 +194,9 @@ export default {
     },
     // 提交评分
     submitScore () {
+      const scoreUpdate = {'user_id': window.sessionStorage.getItem('userID'), 'song_id': this.songId, 'score': Number(this.myScore)}
+      commitSongScoreAPI(scoreUpdate).then(res => {
+      })
       console.log(this.myScore)
       this.scoreVisible = false
     },
@@ -281,6 +285,8 @@ export default {
           this.handleLyrics()
         })
       }
+      console.log('鸡汤来喽')
+      console.log(this.followVisible)
       if (this.tag === 0) {
         // 判断是否关注这个歌手
         const userId = {'userId': window.sessionStorage.getItem('userID')}
@@ -327,13 +333,17 @@ export default {
     },
     // 查看评分
     checkScore () {
+      const getScore = {'user_id': window.sessionStorage.getItem('userID'), 'song_id': this.songId}
+      getSongScoreAPI(getScore).then(res => {
+        console.log(res)
+      })
       this.scoreVisible = true
     },
     // 查看评论
     checkComment () {
       this.commentVisible = true
     },
-    // 收藏或取消收藏
+    // 收藏或取消收藏歌单
     favoriteOrNot () {
       this.favoriteDialogVisible = true
     }

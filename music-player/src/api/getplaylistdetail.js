@@ -22,3 +22,19 @@ export function playlistsongremoveAPI (params) {
     params
   })
 }
+
+export function followPlaylistAPI (params) {
+  return request({
+    url: '/api/song/follow/playlist',
+    method: 'get',
+    params
+  })
+}
+
+export function unfollowPlaylistAPI (params) {
+  return request({
+    url: '/api/song/unfollow/playlist',
+    method: 'get',
+    params
+  })
+}

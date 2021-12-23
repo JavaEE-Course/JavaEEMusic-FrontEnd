@@ -15,7 +15,7 @@
             <span>共{{playlistInfo.song_list.length}}首</span>
           </div>
         </div>
-        <div class="playAllBtn iconfont icon-play"> 播放全部</div>
+        <div class="playAllBtn iconfont icon-play" @click="addToPlayAll"> 播放全部</div>
         <div class="playlist-desc">
           <span>简介：</span>
           <span :title="playlistInfo.playlist_introduction">{{playlistInfo.playlist_introduction}}</span>
@@ -27,8 +27,6 @@
         <el-tab-pane label="歌曲列表">
           <div class="table">
             <el-table :data="songlist"
-                      @row-dblclick="play"
-                      v-el-table-infinite-scroll="loadMore"
                       infinite-scroll-delay=500
                       infinite-scroll-disabled="noMore">
               <el-table-column prop="song_name" label="音乐标题">
@@ -54,6 +52,8 @@
 <script>
 import { getplaylistdetailAPI } from '@/api/getplaylistdetail'
 import {getSongDetailAPI} from '../../api/getsonglist'
+import {followPlaylistAPI, unfollowPlaylistAPI} from '../../api/getplaylistdetail'
+
 export default {
   created () {
     var parm = {
@@ -64,6 +64,7 @@ export default {
       this.songlist = res.data.data.song_list
       console.log(this.songlist)
     })
+    // 判断用户是否已经收藏了这个歌单
   },
   data () {
     return {
@@ -74,6 +75,33 @@ export default {
     }
   },
   methods: {
+    addToPlayAll () {
+      for (let i = 0; i < this.songlist.length; i++) {
+        const id = this.songlist[i].song_id
+        const songId = {'song_id': id}
+        // 获取歌曲详细信息
+        getSongDetailAPI(songId).then(res => {
+          // 需要的内容：
+          // 歌曲本身
+          // 歌曲ID
+          // 封面路径 cover_path
+          // 歌曲路径 song_path
+          let list = []
+          let songInfo = res.data.data
+          songInfo['song_id'] = id
+          list.push(songInfo)
+          list.push(id)
+          list.push(res.data.data.cover_path)
+          list.push(res.data.data.song_path)
+          list.push(res.data.data.song_name)
+          this.$store.commit('addNewMusicInfo', list)
+        })
+      }
+      this.$message({
+        message: '已成功添加到播放列表',
+        type: 'success'
+      })
+    },
     toAlbum (id) {
       this.$router.push(`/index/albumdetail?id=${id}`)
     },
@@ -106,22 +134,25 @@ export default {
       })
     },
     followAndUnfollow () {
-      // TODO:收藏可取消收藏歌单
-      // const followList = {'id': window.sessionStorage.getItem('userID'), 'singerId': Number(this.$route.query.id)}
+      const followList = {'user_id': window.sessionStorage.getItem('userID'), 'playlist_id': Number(this.playlistInfo.playlist_id)}
+      console.log('哈哈哈')
+      console.log(this.playlistInfo)
       if (this.followVisible === true) {
-        console.log('呵呵')
         // 已关注，需要取关
         this.followVisible = false
         this.unfollowVisible = true
+        unfollowPlaylistAPI(followList).then(res => {
+        })
         this.$message({
           message: '已取消收藏歌单',
           type: 'error'
         })
       } else if (this.unfollowVisible === true) {
-        console.log('哈哈')
         // 没有关注，需要关注
         this.unfollowVisible = false
         this.followVisible = true
+        followPlaylistAPI(followList).then(res => {
+        })
         this.$message({
           message: '已成功收藏歌单',
           type: 'success'
