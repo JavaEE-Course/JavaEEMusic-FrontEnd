@@ -281,7 +281,7 @@ export default {
           this.handleLyrics()
         })
       }
-      if (this.tag === 0){
+      if (this.tag === 0) {
         // 判断是否关注这个歌手
         const userId = {'userId': window.sessionStorage.getItem('userID')}
         getFollowSingerAPI(userId).then(res => {

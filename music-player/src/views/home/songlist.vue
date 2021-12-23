@@ -21,7 +21,7 @@
             <div class="songs-wrap">
               <div class="list">
                 <ul style="margin-left: -35px">
-                  <li v-for="(item,index) in allPageList[totalPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                  <li v-for="(item,index) in allPageList[allPageNumber]" :key="index" @click="toPlaylistDetail(item.playlist_id)">
                     <p class="first-p" style="margin-top: 0.3px">{{item.playlist_name}}</p>
                     <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
                     <p class="last-p" :title="item.playlist_introduction">{{item.playlist_introduction}}</p>
@@ -287,6 +287,7 @@ export default {
       currentPage: 0,
       // 所有歌单
       allPageList: [],
+      allPageNumber: 0,
       totalPageNumber: 0,
       // 其它歌单
       oumeiList: [],
