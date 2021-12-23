@@ -291,26 +291,23 @@ export default {
           this.handleLyrics()
         })
       }
-      if (this.tag === 0) {
-        // 判断是否关注这个歌手
-        const userId = {'userId': window.sessionStorage.getItem('userID')}
-        getFollowSingerAPI(userId).then(res => {
-          const singerList = res.data.data
-          let tag = false
-          for (let i = 0; i < singerList.length; i++) {
-            if (singerList[i].id === this.singerId) {
-              // 确实关注了这个歌手
-              tag = true
-              this.followVisible = false
-              break
-            }
+      // 判断是否关注这个歌手
+      const userId = {'userId': window.sessionStorage.getItem('userID')}
+      getFollowSingerAPI(userId).then(res => {
+        const singerList = res.data.data
+        let tag = false
+        for (let i = 0; i < singerList.length; i++) {
+          if (singerList[i].id === this.singerId) {
+            // 确实关注了这个歌手
+            tag = true
+            this.followVisible = false
+            break
           }
-          if (!tag) {
-            this.followVisible = true
-          }
-          this.tag = 1
-        })
-      }
+        }
+        if (!tag) {
+          this.followVisible = true
+        }
+      })
     },
     // 关注歌手
     followAndUnfollow () {

@@ -34,7 +34,7 @@
               <el-table-column prop="song_name" label="音乐标题">
                 <template slot-scope="scope">
                   <span style="cursor:pointer;color:#2980b9;">{{scope.row.song_name}}</span>
-                  <span class="plus" @click="addToplay(scope.row.song_id)">+</span>
+                  <span class="plus" @click="addToplay(scope.row.id)">+</span>
                 </template>
               </el-table-column>
               <el-table-column prop="singer_name" label="歌手"></el-table-column>
