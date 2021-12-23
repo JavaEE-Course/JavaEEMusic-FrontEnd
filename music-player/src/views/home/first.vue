@@ -11,10 +11,10 @@
           <div class="songs-wrap">
             <div class="list">
               <ul style="margin-left: -35px">
-                <li class="iconfont icon-play" v-for="(item,index) in recommendList" :key="index" @click="toPlaylistDetail(item.id)">
-                  <p class="first-p" style="margin-top: 0.3px">{{item.copywriter}}</p>
-                  <img :src="item.picUrl" alt="rec" style="height: 140px;margin-top: -10px">
-                  <p class="last-p" :title="item.name">{{item.name}}</p>
+                <li class="iconfont icon-play" v-for="(item,index) in recommendList" :key="index" @click="toPlaylistDetail(item.playlist_id)">
+                  <p class="first-p" style="margin-top: 0.3px">{{item.playlist_introduction}}</p>
+                  <img :src="item.playlist_picture" alt="rec" style="height: 140px;margin-top: -10px">
+                  <p class="last-p" :title="item.playlist_name">{{item.playlist_name}}</p>
                 </li>
               </ul>
             </div>
@@ -40,7 +40,7 @@
 
 <script>
 import { swiperList } from '../../assets/data/swiper'
-import { getmyplaylistAPI, getotherplaylistAPI, getdailyplaylistAPI } from '@/api/getsonglist'
+import { getmyplaylistAPI, getotherplaylistAPI } from '@/api/getsonglist'
 import { getsingerAPI } from '@/api/getsinger'
 export default {
   created () {
@@ -54,24 +54,10 @@ export default {
       swiperList: swiperList, // 轮播图列表
       recommendList: [
         {
-          copywriter: '橙子',
-          name: '总要吃一个橙子',
-          picUrl: 'https://s2.loli.net/2021/12/11/TQGxDmqNiveYlUV.jpg'
-        },
-        {
-          copywriter: '橙子',
-          name: '总要吃一个橙子',
-          picUrl: 'https://s2.loli.net/2021/12/11/9QtwT82IbAygeGP.jpg'
-        },
-        {
-          copywriter: '橙子',
-          name: '总要吃一个橙子',
-          picUrl: 'https://s2.loli.net/2021/12/11/TQGxDmqNiveYlUV.jpg'
-        },
-        {
-          copywriter: '橙子',
-          name: '总要吃一个橙子',
-          picUrl: 'https://s2.loli.net/2021/12/11/9QtwT82IbAygeGP.jpg'
+          playlist_id: -1,
+          playlist_introduction: 'music-player',
+          playlist_name: '日推歌单',
+          playlist_picture: 'https://s2.loli.net/2021/12/11/TQGxDmqNiveYlUV.jpg'
         }
       ],
       singerList: [],
@@ -88,15 +74,18 @@ export default {
       }
       getmyplaylistAPI(parm).then(res => {
         console.log('my')
+        var my = res.data.data
+        console.log(res.data.data)
+        var c = this.recommendList.concat(my)
+        this.recommendList = c
         console.log(res.data)
       })
       getotherplaylistAPI(parma).then(res => {
         console.log('getother')
-        console.log(res.data)
-      })
-      getdailyplaylistAPI(parma).then(res => {
-        console.log('daily')
-        console.log(res.data)
+        var my = res.data.data
+        console.log(res.data.data)
+        var c = this.recommendList.concat(my)
+        this.recommendList = c
       })
     },
     getSingerList () {
@@ -111,6 +100,13 @@ export default {
     },
     toSingerDetail (id) {
       this.$router.push(`/index/singerDetail?id=${id}`)
+    },
+    toPlaylistDetail (id) {
+      if (id === -1) {
+        this.$router.push(`/index/dailyplaylist`)
+      } else {
+        this.$router.push(`/index/playlistDetail?id=${id}`)
+      }
     }
   }
 }

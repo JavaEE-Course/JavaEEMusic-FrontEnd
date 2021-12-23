@@ -36,6 +36,11 @@ export default new Router({
           component: () => import('@/views/home/playlistdetail')
         },
         {
+          path: '/index/dailyplaylist',
+          name: 'dailyplaylist',
+          component: () => import('@/views/home/dailyplaylist')
+        },
+        {
           path: '/index/singer',
           name: 'singer',
           component: () => import('@/views/home/singer')

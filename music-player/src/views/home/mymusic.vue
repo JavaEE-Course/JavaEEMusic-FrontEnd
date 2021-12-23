@@ -20,7 +20,7 @@
           <div class="list">
             <ul style="margin-left: -35px">
               <li>
-                <el-card class="card">
+                <el-card class="card" @click.native="centerDialogVisible = true">
                   <img src="../../assets/playList/createPlayList.png" alt="rec" style="height: 140px;margin-top: -10px" class="img">
                   <div  class="word"  style="color: #6A5ACD">新建歌单</div>
                 </el-card>
@@ -35,6 +35,31 @@
           </div>
         </div>
       </div>
+      <el-dialog title="新建歌单" :visible.sync="centerDialogVisible" width="400px" center>
+        <el-form class="demo-ruleForm" :model="registerForm" status-icon ref="registerForm" label-width="80px">
+          <el-form-item prop="name" label="歌单名称" size="mini">
+            <el-input v-model="registerForm.name" placeholder="歌曲名称"></el-input>
+          </el-form-item>
+          <el-form-item prop="introduction" label="歌单介绍" size="mini">
+            <el-input v-model="registerForm.introduction" type="textarea" placeholder="歌单介绍"></el-input>
+          </el-form-item>
+          <el-form-item label="请输入歌单封面" size="mini">
+            <el-upload ref="upfile"
+                       style="display: inline"
+                       :auto-upload="false"
+                       :on-change="handleChange"
+                       :file-list="fileList"
+                       action="#">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <span class="dialog-footer" slot="footer">
+        <el-button size="mini" @click="centerDialogVisible = false">取 消</el-button>
+        <el-button type="primary" size="mini" @click="add">确 定</el-button>
+      </span>
+      </el-dialog>
     </el-tab-pane>
     <el-tab-pane label="歌手" name="second" style="padding-left: 8px;font-size: 16px">
       <div class="discover" v-loading="loading" style="align: center">
@@ -69,10 +94,18 @@
 <script>
 import { getmyplaylistAPI } from '../../api/getsonglist'
 import { getFollowSingerAPI } from '../../api/getsinger'
-
+import { creatplaylistAPI } from '../../api/creatplaylist'
 export default {
   data () {
     return {
+      centerDialogVisible: false,
+      registerForm: {
+        // 添加框信息
+        name: '',
+        introduction: ''
+      },
+      imageUrl: '',
+      fileList: [],
       // 加载
       loading: true,
       // 导航栏
@@ -136,6 +169,27 @@ export default {
     })
   },
   methods: {
+    handleChange (file, fileList) {
+      this.fileList = fileList
+      this.imageUrl = URL.createObjectURL(file.raw)
+      console.log(fileList)
+    },
+    // 添加新歌单
+    add () {
+      var id = window.sessionStorage.getItem('userID')
+      let fd = new FormData()
+      fd.append('user_id', id)
+      fd.append('playlist_name', this.registerForm.name)
+      fd.append('playlist_introduction', this.registerForm.introduction)
+      this.fileList.forEach(item => {
+        fd.append('cover', item.raw)
+      })
+      console.log(fd)
+      creatplaylistAPI(fd).then(res => {
+        console.log(res.data)
+      })
+      this.centerDialogVisible = false
+    },
     handleTabClick () {
       if (this.activeName !== 'first') {
         this.playListPageNumber = 0
@@ -263,5 +317,10 @@ export default {
   bottom: 10px;
   margin: auto;
   left: 0;right: 0;
+}
+.avatar {
+  width: 100px;
+  height: 100px;
+  display: block;
 }
 </style>

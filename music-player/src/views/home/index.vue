@@ -20,7 +20,7 @@
           <el-button class="button" type="primary" style="padding-left: 9px" @click="search">搜索</el-button>
         </li>
         <li>
-          <el-avatar class="head" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+          <el-avatar class="head" :src="avatar"></el-avatar>
         </li>
         <li>
           <el-dropdown class="drop" trigger="click" @command="handleCommand" style="color: white">
@@ -40,11 +40,13 @@
   </div>
 </template>
 <script type="text/javascript">
+import { getuserinfoAPI } from '@/api/getuserinfo'
 // import Bottom from '../../components/Bottom.vue'
 export default{
   // components: {Bottom},
   data () {
     return {
+      avatar: '',
       nowIndex: 0,
       keywords: '',
       items: [
@@ -67,6 +69,13 @@ export default{
     if (window.sessionStorage.getItem('userID') === null) {
       this.$router.push({ path: '/login' })
     }
+    let parm = {
+      'id': window.sessionStorage.getItem('userID')
+    }
+    getuserinfoAPI(parm).then(res => {
+      console.log('nikan')
+      this.avatar = res.data.data.avatarPath
+    })
   },
   methods: {
     click (item) {
