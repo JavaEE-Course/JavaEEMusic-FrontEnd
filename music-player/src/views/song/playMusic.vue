@@ -66,10 +66,15 @@
       <el-dialog
         title="收藏歌曲"
         :visible.sync="favoriteDialogVisible"
-        width="30%">
-        <div class="block">
-          <span class="demonstration">收藏歌曲</span>
-        </div>
+        width="30%"
+        height="50%">
+        <el-card>
+          <ul style="list-style-type: none">
+            <li v-for="item in addToFavoriteList" :key="item">
+              {{ item.playlist_name }}
+            </li>
+          </ul>
+        </el-card>
         <span slot="footer" class="dialog-footer">
           <el-button @click="favoriteDialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="handleFavorite">确 定</el-button>
@@ -110,7 +115,7 @@
 </template>
 
 <script>
-import { getSongDetailAPI } from '../../api/getsonglist'
+import {getmyplaylistAPI, getSongDetailAPI} from '../../api/getsonglist'
 import {followAndUnfollowAPI, getFollowSingerAPI} from '../../api/getsinger'
 import {commitSongScoreAPI, getSongScoreAPI} from '../../api/songDetail'
 
@@ -148,29 +153,16 @@ export default {
       bottomLyricList: ['', '', '', '', ''],
       // 评分相关
       colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-      myScore: null
+      myScore: null,
+      // add to favorite list
+      addToFavoriteList: [],
+      addToNameList: []
     }
   },
   created () {
     if (window.sessionStorage.getItem('userID') === null) {
       this.$router.push({ path: '/login' })
     }
-    // const songId = {'song_id': this.$store.getters.getCurrentSongId}
-    // this.songId = this.$store.getters.getCurrentSongId
-    // // 接收歌曲详细信息
-    // getSongDetailAPI(songId).then(res => {
-    //   this.music = res.data.data.song_path
-    //   this.cover = res.data.data.cover_path
-    //   this.songName = res.data.data.song_name
-    //   this.singerName = res.data.data.singer_name
-    //   this.singerId = res.data.data.singer_id
-    //   this.albumName = res.data.data.album_name
-    //   this.commentNumber = res.data.data.comment_number
-    //   this.songScore = isNaN(res.data.data.song_Score) ? '暂无' : res.data.data.song_Score
-    //   this.lyrics = res.data.data.lyrics_path
-    //   this.lyricsTimeList = []
-    //   this.handleLyrics()
-    // })
   },
   mounted () {
     this.timer = setInterval(this.changeSong, 600)
@@ -346,7 +338,19 @@ export default {
     },
     // 收藏或取消收藏歌单
     favoriteOrNot () {
-      this.favoriteDialogVisible = true
+      // 获取我的歌单
+      const userId = {'user_id': window.sessionStorage.getItem('userID')}
+      getmyplaylistAPI(userId).then(res => {
+        this.addToFavoriteList = res.data.data
+        console.log('hahahah')
+        console.log(this.addToFavoriteList)
+        for (let i = 0; i < this.addToFavoriteList; i++) {
+          this.addToNameList.push(this.addToFavoriteList[i].playlist_name)
+        }
+        console.log('安安安安娜')
+        console.log(this.addToNameList)
+        this.favoriteDialogVisible = true
+      })
     }
   }
 }
